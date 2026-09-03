@@ -1,0 +1,3 @@
+import { getSubmissions } from "@/features/internal/services/recruiter";
+export const metadata = { title: "Submissions | Grow Biz Jobs" };
+export default async function SubmissionsPage(){const rows=await getSubmissions();return <div><h1 className="font-display text-[28px] font-bold text-ink">Submissions</h1><div className="mt-6 grid gap-3">{rows.map(s=><article key={s.id} className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">{s.candidate}</h2><p className="mt-1 text-[14px] text-mist">{s.company} - {s.role} - {s.recruiter}</p><p className="mt-2 text-[13px] text-mist">Client: {s.clientStatus} - Interview: {s.interviewStatus} - Offer: {s.offerStatus}</p></article>)}</div></div>}

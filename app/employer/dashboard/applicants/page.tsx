@@ -1,0 +1,10 @@
+import { ApplicationStatusBadge } from "@/components/candidate/ApplicationStatusBadge";
+import { getApplicants, getEmployerJobs } from "@/features/employer/services/workspace";
+
+export const metadata = { title: "Applicants | Grow Biz Jobs" };
+
+export default async function ApplicantsPage() {
+  const [apps, jobs] = await Promise.all([getApplicants(), getEmployerJobs()]);
+  const jobById = new Map(jobs.map((j) => [j.id, j]));
+  return <div><h1 className="font-display text-[28px] font-bold text-ink">Applicants</h1><div className="mt-5 flex flex-wrap gap-2">{["All","Applied","Screening","Shortlisted","Interview","Offer","Closed"].map((f) => <span key={f} className="rounded-pill border border-line bg-white px-3 py-2 text-[13px]">{f}</span>)}</div><div className="mt-6 grid gap-3">{apps.map((a) => <article key={a.id} className="rounded-card border border-line bg-white p-5"><div className="flex flex-wrap justify-between gap-3"><div><h2 className="font-display text-[18px] font-semibold text-ink">{a.candidateName}</h2><p className="mt-1 text-[14px] text-mist">{a.headline} - {a.experience} - {a.location}</p><p className="mt-1 text-[13px] text-mist">{jobById.get(a.jobId)?.title} - Applied {a.appliedAt} - Owner {a.owner}</p></div><ApplicationStatusBadge stage={a.stage} /></div><div className="mt-3 flex flex-wrap gap-1.5">{a.tags.map((t) => <span key={t} className="rounded-pill border border-line px-2.5 py-1 text-[12.5px]">{t}</span>)}</div><div className="mt-4 grid gap-3 sm:grid-cols-2"><label className="text-[13px] font-medium text-ink">Move stage<select defaultValue={a.stage} className="mt-1.5 min-h-10 w-full rounded-card border border-line px-3"><option>applied</option><option>screening</option><option>shortlisted</option><option>interview</option><option>offer</option><option>hired</option><option>rejected</option></select></label><label className="text-[13px] font-medium text-ink">Internal note<input placeholder="Add internal note" className="mt-1.5 min-h-10 w-full rounded-card border border-line px-3" /></label></div></article>)}</div></div>;
+}

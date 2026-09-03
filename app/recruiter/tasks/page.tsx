@@ -1,0 +1,3 @@
+import { getRecruiterTasks } from "@/features/internal/services/recruiter";
+export const metadata = { title: "Recruiter Tasks | Grow Biz Jobs" };
+export default async function TasksPage(){const rows=await getRecruiterTasks();return <div><h1 className="font-display text-[28px] font-bold text-ink">Tasks / SLA</h1><div className="mt-6 grid gap-3">{rows.map(t=><article key={t.id} className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">{t.task}</h2><p className="mt-1 text-[14px] text-mist">{t.requisitionId} - Due {t.dueDate} - {t.priority}</p><span className="mt-3 inline-flex rounded-pill bg-plum-50 px-3 py-1 text-[12.5px] font-medium text-plum-700">{t.status}</span></article>)}</div></div>}

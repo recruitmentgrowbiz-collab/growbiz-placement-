@@ -1,0 +1,8 @@
+import { getEmployerJobs, getRecruitmentRequests } from "@/features/employer/services/workspace";
+
+export const metadata = { title: "Recruitment Support | Grow Biz Jobs" };
+
+export default async function RecruitmentPage() {
+  const [jobs, requests] = await Promise.all([getEmployerJobs(), getRecruitmentRequests()]);
+  return <div><h1 className="font-display text-[28px] font-bold text-ink">Recruitment Support</h1><p className="mt-2 text-[14.5px] text-mist">Request Grow Biz managed recruitment without repeating company details.</p><div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]"><section className="grid gap-3">{requests.map((r) => <article key={r.id} className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">{r.role}</h2><p className="mt-1 text-[14px] text-mist">{r.hires} hires - {r.location} - {r.timeline}</p><p className="mt-2 text-[13px] text-plum-700">{r.status}</p></article>)}</section><form className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">Share requirement</h2><label className="mt-3 block text-[13px] font-medium">Existing job<select className="mt-1 min-h-10 w-full rounded-card border border-line px-3">{jobs.map((j) => <option key={j.id}>{j.title}</option>)}</select></label>{["Number of hires","Location","Experience","Timeline","Requirement notes"].map((l) => <label key={l} className="mt-3 block text-[13px] font-medium">{l}<input className="mt-1 min-h-10 w-full rounded-card border border-line px-3" /></label>)}<button className="mt-4 min-h-10 rounded-pill bg-plum-600 px-4 text-[13px] font-medium text-white">Prepare Request</button></form></div></div>;
+}

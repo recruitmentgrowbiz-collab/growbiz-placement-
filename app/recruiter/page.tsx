@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { getRecruiterDashboard } from "@/features/internal/services/recruiter";
+
+export const metadata = { title: "Recruiter Workspace | Grow Biz Jobs" };
+
+export default async function RecruiterOverviewPage() {
+  const d = await getRecruiterDashboard();
+  const cards = [["Open Requisitions", d.requisitions.length],["Candidates in Screening", d.applicants.filter((a) => a.stage === "screening").length],["Shortlists Pending", d.requisitions.filter((r) => r.status === "Shortlisting").length],["Upcoming Interviews", d.interviews.length],["Placements in Progress", d.placements.length],["SLA Alerts", d.tasks.filter((t) => t.status !== "Done").length]];
+  return <div><h1 className="font-display text-[28px] font-bold text-ink">Recruiter Overview</h1><p className="mt-2 text-[14.5px] text-mist">Internal Recruitment OS for requisitions, sourcing, submissions, interviews and placements.</p><div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{cards.map(([k,v]) => <div key={k} className="rounded-card border border-line bg-white p-5"><p className="text-[13px] text-mist">{k}</p><p className="mt-2 font-display text-[24px] font-bold text-ink">{v}</p></div>)}</div><div className="mt-8 grid gap-6 lg:grid-cols-2"><section className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">Priority Requisitions</h2><div className="mt-4 grid gap-3">{d.requisitions.map((r) => <Link key={r.id} href={`/recruiter/requisitions/${r.id}`} className="rounded-card border border-line p-4"><p className="font-medium text-ink">{r.role}</p><p className="text-[13px] text-mist">{r.company} - {r.status} - {r.slaState}</p></Link>)}</div></section><section className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">SLA / Follow-up Tasks</h2><div className="mt-4 grid gap-3">{d.tasks.map((t) => <div key={t.id} className="rounded-card border border-line p-4"><p className="font-medium text-ink">{t.task}</p><p className="text-[13px] text-mist">{t.dueDate} - {t.priority} - {t.status}</p></div>)}</div></section></div></div>;
+}

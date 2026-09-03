@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { getRequisitions } from "@/features/internal/services/recruiter";
+export const metadata = { title: "Requisitions | Grow Biz Jobs" };
+export default async function RequisitionsPage(){const rows=await getRequisitions();return <div><h1 className="font-display text-[28px] font-bold text-ink">Requisitions</h1><div className="mt-6 grid gap-3">{rows.map(r=><Link key={r.id} href={`/recruiter/requisitions/${r.id}`} className="rounded-card border border-line bg-white p-5"><div className="flex flex-wrap justify-between gap-3"><div><h2 className="font-display text-[18px] font-semibold text-ink">{r.role}</h2><p className="mt-1 text-[14px] text-mist">{r.company} - {r.hires} hires - {r.location}</p></div><span className="rounded-pill bg-plum-50 px-3 py-1 text-[12.5px] font-medium text-plum-700">{r.status}</span></div><p className="mt-3 text-[13px] text-mist">Owner {r.owner} - {r.priority} - {r.slaState}</p></Link>)}</div></div>}

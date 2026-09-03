@@ -1,0 +1,8 @@
+export type RequisitionStatus = "Submitted" | "Requirement Calibration" | "Sourcing" | "Screening" | "Shortlisting" | "Interview Coordination" | "Offer / Selection" | "Joining" | "Closed";
+export type Requisition = { id: string; company: string; role: string; hires: string; location: string; experience: string; priority: "High" | "Medium" | "Low"; owner: string; status: RequisitionStatus; createdAt: string; targetTimeline: string; slaState: "On track" | "Due soon" | "Overdue" };
+export type Submission = { id: string; candidate: string; company: string; role: string; recruiter: string; submittedAt: string; clientStatus: string; interviewStatus: string; offerStatus: string; internalNote?: string; clientVisibleNote?: string };
+export type Placement = { id: string; candidate: string; employer: string; role: string; offerStatus: string; joiningDate: string; placementStatus: "Selected" | "Offer Made" | "Offer Accepted" | "Joined" | "Did Not Join" | "Closed"; commercialStatus: "Internal review" | "Invoice pending" | "Settled" };
+export type InternalTask = { id: string; task: string; requisitionId: string; dueDate: string; priority: "High" | "Medium" | "Low"; status: "Open" | "In Progress" | "Done" };
+export type SafetyReport = { id: string; reporter: string; target: string; category: string; createdAt: string; status: "Open" | "In Review" | "Resolved" | "Dismissed"; owner: string };
+export type SupportCase = { id: string; case: string; userCompany: string; category: string; priority: "High" | "Medium" | "Low"; status: "Open" | "In Progress" | "Waiting" | "Resolved" | "Closed"; createdAt: string; owner: string };
+export type Activity = { id: string; actor: string; action: string; target: string; timestamp: string };

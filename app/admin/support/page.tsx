@@ -1,0 +1,3 @@
+import { getSupportCases } from "@/features/internal/services/admin";
+export const metadata = { title: "Support | Grow Biz Jobs" };
+export default async function SupportPage(){const rows=await getSupportCases();return <div><h1 className="font-display text-[28px] font-bold text-ink">Support</h1><div className="mt-6 grid gap-3">{rows.map(c=><article key={c.id} className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">{c.case}</h2><p className="mt-1 text-[14px] text-mist">{c.userCompany} - {c.category} - {c.priority} - {c.status}</p><label className="mt-4 block text-[13px] font-medium">Internal note<input className="mt-1 min-h-10 w-full rounded-card border border-line px-3" /></label></article>)}</div></div>}

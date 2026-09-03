@@ -1,0 +1,3 @@
+import { getClients } from "@/features/internal/services/recruiter";
+export const metadata = { title: "Recruiter Clients | Grow Biz Jobs" };
+export default async function ClientsPage(){const rows=await getClients();return <div><h1 className="font-display text-[28px] font-bold text-ink">Clients</h1><div className="mt-6 grid gap-3">{rows.map(c=><article key={c.company} className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">{c.company}</h2><p className="mt-1 text-[14px] text-mist">{c.verificationState} - {c.activeRequisitions} active requisitions - {c.assignedRecruiter}</p><p className="mt-2 text-[13px] text-mist">{c.recentActivity}</p></article>)}</div></div>}

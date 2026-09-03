@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { getEmployerJobs } from "@/features/employer/services/workspace";
+
+export const metadata = { title: "Employer Jobs | Grow Biz Jobs" };
+
+export default async function EmployerJobsPage() {
+  const jobs = await getEmployerJobs();
+  return <div><div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="font-display text-[28px] font-bold text-ink">Jobs</h1><p className="mt-2 text-[14.5px] text-mist">Create, edit, publish, pause, close or duplicate job posts.</p></div><Link href="/employer/dashboard/jobs/new" className="rounded-pill bg-plum-600 px-5 py-3 text-[14px] font-medium text-white">Post a Job</Link></div><div className="mt-5 flex flex-wrap gap-2">{["All","Active","Draft","Paused","Closed"].map((f) => <span key={f} className="rounded-pill border border-line bg-white px-3 py-2 text-[13px]">{f}</span>)}</div><div className="mt-6 grid gap-3">{jobs.map((job) => <article key={job.id} className="rounded-card border border-line bg-white p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="font-display text-[18px] font-semibold text-ink">{job.title}</h2><p className="mt-1 text-[13.5px] text-mist">{job.location} - {job.mode} - expires {job.expiresAt}</p></div><span className="rounded-pill bg-plum-50 px-3 py-1 text-[12.5px] font-medium text-plum-700">{job.status}</span></div><div className="mt-4 flex flex-wrap gap-2"><Link href={`/employer/dashboard/jobs/${job.id}`} className="rounded-pill border border-line px-3 py-2 text-[13px]">View/Edit</Link><button className="rounded-pill border border-line px-3 py-2 text-[13px]">Duplicate</button><button className="rounded-pill border border-line px-3 py-2 text-[13px]">Pause / Resume</button><button className="rounded-pill border border-line px-3 py-2 text-[13px]">Close</button></div></article>)}</div></div>;
+}
