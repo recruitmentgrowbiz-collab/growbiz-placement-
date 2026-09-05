@@ -27,12 +27,9 @@ type PayUTxnFields = {
 
 /**
  * PayU's documented request-hash sequence: key|txnid|amount|productinfo|
- * firstname|email|udf1..udf5|(4 more empty fields)|SALT — confirmed against
+ * firstname|email|udf1..udf5|(5 more empty fields)|SALT. Confirmed against
  * PayU's own "Transaction Error" page, which spells out the exact formula
- * and a worked example when a hash is wrong. That page is the ground truth
- * here, not general documentation — this exact field count (4 empty
- * padding fields, not 5) came directly from reading PayU's own error output
- * character by character rather than assuming a remembered format was right.
+ * and a worked example when a hash is wrong.
  */
 export function generateRequestHash(fields: PayUTxnFields): string {
   const { key, salt } = getPayUCredentials();
@@ -52,6 +49,7 @@ export function generateRequestHash(fields: PayUTxnFields): string {
     "", // padding
     "", // padding
     "", // padding
+    "", // padding
     salt,
   ];
   return crypto.createHash("sha512").update(parts.join("|")).digest("hex");
@@ -66,6 +64,7 @@ export function verifyResponseHash(fields: PayUTxnFields & { status: string; has
   const parts = [
     salt,
     fields.status,
+    "", // padding
     "", // padding
     "", // padding
     "", // padding
