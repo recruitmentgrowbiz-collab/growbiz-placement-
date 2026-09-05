@@ -6,6 +6,26 @@ import { createClient } from "@/lib/supabase/server";
 
 const PAGE_SIZE = 30;
 
+async function searchCandidates(
+  supabase: ReturnType<typeof createClient>,
+  searchQuery: string,
+  limit: number,
+  offset: number
+) {
+  const result = await supabase.rpc("search_candidates", {
+    search_query: searchQuery,
+    p_limit: limit,
+    p_offset: offset,
+  });
+
+  if (result.error?.code !== "PGRST202") {
+    return result.data ?? [];
+  }
+
+  const fallback = await supabase.rpc("search_candidates", { search_query: searchQuery });
+  return ((fallback.data as any[]) ?? []).slice(offset, offset + limit);
+}
+
 export default async function EmployerCandidatesPage({
   searchParams,
 }: {
@@ -53,8 +73,8 @@ export default async function EmployerCandidatesPage({
 
   // Teaser fields only — full details (incl. resume) come from a direct table
   // read that RLS itself only permits once a real unlock record exists.
-  const [{ data: candidates }, { data: unlocks }, { data: membership }] = await Promise.all([
-    supabase.rpc("search_candidates", { search_query: searchQuery, p_limit: PAGE_SIZE, p_offset: 0 }),
+  const [candidates, { data: unlocks }, { data: membership }] = await Promise.all([
+    searchCandidates(supabase, searchQuery, PAGE_SIZE, 0),
     supabase.from("candidate_unlocks").select("candidate_id, created_at").eq("company_id", companyId),
     supabase.from("memberships").select("candidate_unlocks_limit").eq("company_id", companyId).maybeSingle(),
   ]);

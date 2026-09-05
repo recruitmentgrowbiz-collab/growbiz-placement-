@@ -57,11 +57,19 @@ export function CandidateSearch({
   async function loadMore() {
     setLoadingMore(true);
     const supabase = createClient();
-    const { data } = await supabase.rpc("search_candidates", {
+    const result = await supabase.rpc("search_candidates", {
       search_query: initialQuery,
       p_limit: pageSize,
       p_offset: list.length,
     });
+    const data =
+      result.error?.code === "PGRST202"
+        ? (
+            await supabase.rpc("search_candidates", {
+              search_query: initialQuery,
+            })
+          ).data?.slice(list.length, list.length + pageSize)
+        : result.data;
     setLoadingMore(false);
     const next = (data as CandidateTeaser[]) ?? [];
     setList((prev) => [...prev, ...next]);
