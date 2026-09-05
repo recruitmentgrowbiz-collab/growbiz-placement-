@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateTxnId, generateRequestHash, getPayUCredentials, PAYU_PAYMENT_URL, PLAN_PRICES_PAISE } from "@/lib/payu";
+import { insertPaymentRecord } from "@/lib/payment-records";
 
 export async function POST(req: NextRequest) {
   const supabase = createClient();
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     const hash = generateRequestHash({ txnid, amount, productinfo, firstname, email });
 
-    await supabase.from("payments").insert({
+    const paymentInsert = await insertPaymentRecord(supabase, {
       company_id: companyRow.company_id,
       plan,
       amount_paise: amountPaise,
@@ -42,6 +43,9 @@ export async function POST(req: NextRequest) {
       created_by: user.id,
       status: "created",
     });
+    if (paymentInsert.error) {
+      return NextResponse.json({ error: paymentInsert.error.message }, { status: 500 });
+    }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 

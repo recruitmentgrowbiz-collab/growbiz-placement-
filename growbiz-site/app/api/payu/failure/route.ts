@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { markPaymentFailed } from "@/lib/payment-records";
 
 export async function POST(req: NextRequest) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -8,7 +9,7 @@ export async function POST(req: NextRequest) {
 
   if (txnid) {
     const admin = createAdminClient();
-    await admin.from("payments").update({ status: "failed" }).eq("provider_order_id", txnid).eq("status", "created");
+    await markPaymentFailed(admin, txnid);
   }
 
   return NextResponse.redirect(`${appUrl}/payment/failed`);

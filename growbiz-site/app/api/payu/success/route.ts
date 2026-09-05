@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyResponseHash, PLAN_ENTITLEMENTS } from "@/lib/payu";
+import { findPaymentByOrderId, markPaymentPaid } from "@/lib/payment-records";
 
 /**
  * PayU redirects the user's own browser here via a POST after payment
@@ -30,11 +31,7 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminClient();
 
-  const { data: payment } = await admin
-    .from("payments")
-    .select("*")
-    .eq("provider_order_id", txnid)
-    .maybeSingle();
+  const { data: payment } = await findPaymentByOrderId(admin, txnid);
 
   if (!payment) {
     return NextResponse.redirect(`${appUrl}/payment/failed`);
@@ -48,10 +45,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await admin
-    .from("payments")
-    .update({ provider_payment_id: mihpayid, status: "paid", paid_at: new Date().toISOString() })
-    .eq("id", payment.id);
+  await markPaymentPaid(admin, payment.id, mihpayid);
 
   if (payment.candidate_id) {
     const expiresAt = new Date();
