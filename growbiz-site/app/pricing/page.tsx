@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Check } from "lucide-react";
 import { Container, Kicker, PrimaryButton } from "@/components/ui";
+import { PricingPlanAction } from "@/components/employer/PricingPlanAction";
 import { employerPlans, recruitmentPricing, faqs } from "@/lib/data";
 
 export const metadata = {
@@ -74,16 +74,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link
-                  href="/contact"
-                  className={`mt-6 rounded-pill px-4 py-2.5 text-center text-[14px] font-medium ${
-                    plan.highlight
-                      ? "bg-plum-600 text-white hover:bg-plum-700"
-                      : "border border-plum-600 text-plum-600 hover:bg-plum-50"
-                  }`}
-                >
-                  {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-                </Link>
+                <PricingPlanAction planName={plan.name} highlighted={Boolean(plan.highlight)} />
               </div>
             ))}
           </div>
