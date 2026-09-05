@@ -26,8 +26,8 @@ export async function POST(_req: NextRequest) {
     const txnid = generateTxnId();
     const amount = (CAREER_PLUS_PRICE_PAISE / 100).toFixed(2);
     const productinfo = "career_plus";
-    const firstname = profile?.full_name || "Candidate";
-    const email = user.email ?? "";
+    const firstname = (profile?.full_name ?? "").trim() || "Candidate";
+    const email = (user.email ?? "").trim();
 
     const hash = generateRequestHash({ txnid, amount, productinfo, firstname, email });
 

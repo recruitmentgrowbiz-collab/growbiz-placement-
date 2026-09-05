@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
     const { key } = getPayUCredentials();
     const txnid = generateTxnId();
     const amount = (amountPaise / 100).toFixed(2); // PayU expects rupees, not paise
-    const productinfo = `plan_${plan}`;
-    const firstname = profile?.full_name || "Employer";
-    const email = user.email ?? "";
+    const productinfo = `plan_${plan}`.trim();
+    const firstname = (profile?.full_name ?? "").trim() || "Employer";
+    const email = (user.email ?? "").trim();
 
     const hash = generateRequestHash({ txnid, amount, productinfo, firstname, email });
 
