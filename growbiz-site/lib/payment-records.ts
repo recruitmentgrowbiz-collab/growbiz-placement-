@@ -22,7 +22,7 @@ export async function insertPaymentRecord(supabase: SupabaseLike, row: Record<st
 
 export async function findPaymentByOrderId(admin: SupabaseLike, orderId: string) {
   const result = await admin.from("payments").select("*").eq("provider_order_id", orderId).maybeSingle();
-  if (!isMissingColumn(result.error, "provider_order_id")) {
+  if (!isMissingColumn(result.error, "provider_order_id") && result.data) {
     return result;
   }
 
@@ -49,8 +49,9 @@ export async function markPaymentFailed(admin: SupabaseLike, orderId: string) {
     .from("payments")
     .update({ status: "failed" })
     .eq("provider_order_id", orderId)
-    .eq("status", "created");
-  if (!isMissingColumn(result.error, "provider_order_id")) {
+    .eq("status", "created")
+    .select("id");
+  if (!isMissingColumn(result.error, "provider_order_id") && result.data?.length) {
     return result;
   }
 
@@ -58,5 +59,6 @@ export async function markPaymentFailed(admin: SupabaseLike, orderId: string) {
     .from("payments")
     .update({ status: "failed" })
     .eq("razorpay_order_id", orderId)
-    .eq("status", "created");
+    .eq("status", "created")
+    .select("id");
 }
