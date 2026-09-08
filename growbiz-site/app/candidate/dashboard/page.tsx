@@ -28,7 +28,8 @@ export default async function CandidateDashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: candidate }, { data: applications }, { data: savedJobs }] = await Promise.all([
+  const [{ data: candidate }, { data: applications }, { data: savedJobs }, { data: experience }, { data: education }] =
+    await Promise.all([
     supabase.from("candidates").select("*").eq("user_id", user.id).maybeSingle(),
     supabase
       .from("applications")
@@ -39,6 +40,16 @@ export default async function CandidateDashboardPage() {
       .from("saved_jobs")
       .select("job_id, jobs(id, title, companies(name))")
       .eq("candidate_id", user.id),
+    supabase
+      .from("candidate_experience")
+      .select("*")
+      .eq("candidate_id", user.id)
+      .order("start_date", { ascending: false }),
+    supabase
+      .from("candidate_education")
+      .select("*")
+      .eq("candidate_id", user.id)
+      .order("start_date", { ascending: false }),
   ]);
 
   const score = completeness(candidate);
@@ -56,7 +67,12 @@ export default async function CandidateDashboardPage() {
             <div>
               <h2 className="font-display text-[17px] font-semibold text-ink">Your profile</h2>
               <div className="mt-3">
-                <ProfileForm userId={user.id} initial={candidate as Candidate | null} />
+                <ProfileForm
+                  userId={user.id}
+                  initial={candidate as Candidate | null}
+                  initialExperience={(experience as any) ?? []}
+                  initialEducation={(education as any) ?? []}
+                />
               </div>
             </div>
 

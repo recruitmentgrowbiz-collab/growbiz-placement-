@@ -19,18 +19,29 @@ export function ApplyPanel({
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [savingJob, setSavingJob] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(!!dbJobId);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!open || !dbJobId) return;
+    if (!dbJobId) return;
     const supabase = createClient();
-    setCheckingAuth(true);
-    supabase.auth.getUser().then(({ data }) => {
+    if (open) setCheckingAuth(true);
+    supabase.auth.getUser().then(async ({ data }) => {
       setUserId(data.user?.id ?? null);
-      setCheckingAuth(false);
+      if (data.user) {
+        const { data: savedRow } = await supabase
+          .from("saved_jobs")
+          .select("job_id")
+          .eq("candidate_id", data.user.id)
+          .eq("job_id", dbJobId)
+          .maybeSingle();
+        setSaved(!!savedRow);
+      }
+      if (open) setCheckingAuth(false);
     });
   }, [open, dbJobId]);
 
@@ -92,8 +103,8 @@ export function ApplyPanel({
   }
 
   async function toggleSave() {
+    setSaveError(null);
     if (!dbJobId) {
-      setSaved((s) => !s);
       return;
     }
     const supabase = createClient();
@@ -102,33 +113,63 @@ export function ApplyPanel({
       setOpen(true);
       return;
     }
+    setSavingJob(true);
     if (saved) {
-      await supabase.from("saved_jobs").delete().eq("candidate_id", data.user.id).eq("job_id", dbJobId);
+      const { error: deleteError } = await supabase
+        .from("saved_jobs")
+        .delete()
+        .eq("candidate_id", data.user.id)
+        .eq("job_id", dbJobId);
+      setSavingJob(false);
+      if (deleteError) {
+        setSaveError(deleteError.message);
+        return;
+      }
+      setSaved(false);
     } else {
-      await supabase.from("saved_jobs").insert({ candidate_id: data.user.id, job_id: dbJobId });
+      const { error: insertError } = await supabase
+        .from("saved_jobs")
+        .insert({ candidate_id: data.user.id, job_id: dbJobId });
+      setSavingJob(false);
+      if (insertError) {
+        if (insertError.code === "23505") {
+          setSaved(true);
+          return;
+        }
+        setSaveError(insertError.message);
+        return;
+      }
+      setSaved(true);
     }
-    setSaved((s) => !s);
   }
 
   return (
     <>
-      <div className="flex flex-col gap-2.5 sm:flex-row">
-        <button
-          onClick={() => setOpen(true)}
-          className="rounded-pill bg-plum-600 px-5 py-3 text-[15px] font-medium text-white transition-colors hover:bg-plum-700"
-        >
-          Apply Now
-        </button>
-        <button
-          onClick={toggleSave}
-          className={`rounded-pill border px-5 py-3 text-[15px] font-medium transition-colors ${
-            saved
-              ? "border-plum-600 bg-plum-50 text-plum-700"
-              : "border-line text-ink/80 hover:border-plum-300"
-          }`}
-        >
-          {saved ? "Saved" : "Save Job"}
-        </button>
+      <div>
+        <div className="flex flex-col gap-2.5 sm:flex-row">
+          <button
+            onClick={() => setOpen(true)}
+            className="rounded-pill bg-plum-600 px-5 py-3 text-[15px] font-medium text-white transition-colors hover:bg-plum-700"
+          >
+            Apply Now
+          </button>
+          <button
+            onClick={toggleSave}
+            disabled={!dbJobId || savingJob}
+            title={!dbJobId ? "Demo listings cannot be saved to your dashboard." : undefined}
+            className={`rounded-pill border px-5 py-3 text-[15px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+              saved
+                ? "border-plum-600 bg-plum-50 text-plum-700"
+                : "border-line text-ink/80 hover:border-plum-300"
+            }`}
+          >
+            {savingJob ? "Saving…" : saved ? "Saved" : "Save Job"}
+          </button>
+        </div>
+        {!dbJobId && (
+          <p className="mt-2 text-[12.5px] text-mist">Demo listing — saving is available on live jobs.</p>
+        )}
+        {saveError && <p className="mt-2 text-[12.5px] text-red-700">{saveError}</p>}
       </div>
 
       {open && (
