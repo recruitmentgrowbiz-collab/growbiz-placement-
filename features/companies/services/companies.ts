@@ -1,3 +1,4 @@
+import { isActiveJob } from "@/features/jobs/utils/lifecycle";
 import { mockCompanies } from "@/features/companies/mock/companies";
 import { mockJobs } from "@/features/jobs/mock/jobs";
 
@@ -16,5 +17,5 @@ export async function getCompanySlugByName(name: string) {
 export async function getJobsByCompany(companyId: string) {
   const company = mockCompanies.find((item) => item.id === companyId);
   if (!company) return [];
-  return mockJobs.filter((job) => job.company === company.name && (job.status ?? "published") === "published");
+  return mockJobs.filter((job) => job.company === company.name && isActiveJob(job));
 }

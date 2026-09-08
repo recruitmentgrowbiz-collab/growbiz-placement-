@@ -1,13 +1,11 @@
+import { pageMetadata } from "@/lib/seo";
+import { publicSeo } from "@/features/public-content/seo-content";
 import Link from "next/link";
 import { Check, ShieldCheck } from "lucide-react";
 import { Container, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
 import { getMembershipPlans } from "@/features/memberships/services/plans";
 
-export const metadata = {
-  title: "Employer Membership Plans - Grow Biz Jobs",
-  description:
-    "Compare employer hiring memberships for job posting, candidate access, recruiter seats and hiring support.",
-};
+export const metadata = pageMetadata("/pricing");
 
 const rows = [
   ["Active jobs", "activeJobsLimit"],
@@ -20,11 +18,11 @@ const rows = [
 ] as const;
 
 const pricingFaqs = [
-  ["Can we upgrade later?", "Yes. Plan IDs and entitlements are structured so upgrades, downgrades and usage limits can be added when account billing is implemented."],
+  ["Can we upgrade later?", "Contact Grow Biz to discuss a plan change when your job posting, candidate access or team requirements change."],
   ["What happens if our hiring volume increases?", "You can move to a higher access tier or discuss a custom plan for recurring, multi-location or high-volume hiring."],
   ["Does a plan include managed recruitment?", "Memberships are for self-service platform access. Managed recruitment is a separate or additional service where appropriate."],
   ["Is candidate access unlimited?", "No. Candidate search and profile access depend on employer verification, permissions and plan entitlement."],
-  ["Do we need employer verification?", "Full hiring and candidate-database access may require company verification before access is enabled."],
+  ["Do we need employer verification?", "Company verification is required before full candidate-database access, along with the relevant plan entitlement and candidate consent."],
 ];
 
 export default async function PricingPage() {
@@ -36,8 +34,8 @@ export default async function PricingPage() {
         <Container className="py-16 md:py-20">
           <div className="max-w-2xl">
             <Kicker>Employer memberships</Kicker>
-            <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">Choose a Hiring Plan That Matches Your Hiring Volume</h1>
-            <p className="mt-4 max-w-xl text-[16.5px] leading-relaxed text-mist">Choose flexible hiring access for job posting, candidate discovery, recruiter collaboration and hiring support.</p>
+            <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">{publicSeo["/pricing"].h1}</h1>
+            <p className="mt-4 max-w-xl text-[16.5px] leading-relaxed text-mist">{publicSeo["/pricing"].description}</p>
           </div>
         </Container>
       </section>
@@ -46,13 +44,13 @@ export default async function PricingPage() {
         <Container>
           <div className="grid gap-4 lg:grid-cols-4">
             {plans.map((plan) => (
-              <article key={plan.id} className={`flex rounded-card border p-5 ${plan.featured ? "border-plum-600 bg-plum-50/60" : "border-line"}`}>
+              <article key={plan.id} className={`glass-interactive flex rounded-card border p-5 ${plan.featured ? "border-plum-600 bg-plum-50/60" : "border-line"}`}>
                 <div className="flex w-full flex-col">
                   {plan.featured && <span className="mb-3 w-fit rounded-pill bg-plum-600 px-2.5 py-1 text-[11.5px] font-medium text-white">Recommended</span>}
                   <h2 className="font-display text-[18px] font-semibold text-ink">{plan.name}</h2>
                   <p className="mt-2 min-h-14 text-[13.5px] leading-relaxed text-mist">{plan.description}</p>
                   <p className="mt-4 font-display text-[28px] font-bold text-ink">{plan.price}</p>
-                  <p className="text-[12.5px] capitalize text-mist">{plan.billingCycle} plan structure</p>
+                  <p className="text-[12.5px] capitalize text-mist">{plan.billingCycle} terms</p>
                   <ul className="mt-5 flex flex-1 flex-col gap-2.5">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex gap-2 text-[13.5px] leading-relaxed text-ink/80">
@@ -61,21 +59,21 @@ export default async function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href={plan.ctaHref} className={`mt-6 inline-flex min-h-11 items-center justify-center rounded-pill px-4 py-2.5 text-[14px] font-medium ${plan.featured ? "bg-plum-600 text-white hover:bg-plum-700" : "border border-plum-600 text-plum-600 hover:bg-plum-50"}`}>
+                  <Link href={plan.ctaHref} className={`gb-button mt-6 inline-flex min-h-11 items-center justify-center rounded-pill px-4 py-2.5 text-[14px] font-medium ${plan.featured ? "bg-plum-600 text-white hover:bg-plum-700" : "border border-plum-600 text-plum-600 hover:bg-plum-50"}`}>
                     {plan.ctaLabel}
                   </Link>
                 </div>
               </article>
             ))}
           </div>
-          <p className="mt-6 text-[13px] leading-relaxed text-mist">Final membership prices are not published here. Commercial values remain configurable for launch decisions and future payment-provider integration.</p>
+          <p className="mt-6 text-[13px] leading-relaxed text-mist">Contact Grow Biz for current pricing, included access and billing terms before choosing a plan.</p>
         </Container>
       </section>
 
       <section className="border-b border-line bg-plum-50/40 py-16 md:py-20">
         <Container>
           <Kicker>Plan entitlements</Kicker>
-          <h2 className="mt-4 font-display text-[26px] font-bold text-ink md:text-[30px]">Backend-ready plan comparison</h2>
+          <h2 className="mt-4 font-display text-[26px] font-bold text-ink md:text-[30px]">Compare employer hiring plans</h2>
           <div className="mt-8 hidden rounded-card border border-line bg-white lg:block">
             <div className="grid grid-cols-[220px_repeat(4,1fr)] border-b border-line">
               <div className="p-4 text-[13px] font-medium text-mist">Feature</div>
@@ -127,8 +125,8 @@ export default async function PricingPage() {
           </div>
           <div className="rounded-card border border-white/15 p-6">
             <ShieldCheck size={26} className="text-plum-200" />
-            <p className="mt-4 font-display text-[20px] font-semibold">Gateway-agnostic billing readiness</p>
-            <p className="mt-2 text-[14.5px] leading-relaxed text-white/65">The public UI is not coupled to Razorpay or any specific payment provider. Payment, invoices and failed-payment restrictions can be added behind the plan service layer later.</p>
+            <p className="mt-4 font-display text-[20px] font-semibold">Candidate access follows verification and consent</p>
+            <p className="mt-2 text-[14.5px] leading-relaxed text-white/65">Employer verification, plan limits and candidate visibility settings determine profile access. A membership does not provide unrestricted access to candidate data.</p>
           </div>
         </Container>
       </section>

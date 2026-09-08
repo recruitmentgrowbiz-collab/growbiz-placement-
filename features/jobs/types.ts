@@ -17,6 +17,10 @@ export type ScreeningQuestion = {
 export type Job = {
   id: string;
   slug?: string;
+  isDemo?: boolean;
+  address?: { locality: string; region?: string; country: string };
+  applicantCountries?: string[];
+  salaryDetails?: { min: number; max: number; currency: string; unit: "HOUR" | "DAY" | "WEEK" | "MONTH" | "YEAR" };
   companyId?: string;
   title: string;
   company: string;

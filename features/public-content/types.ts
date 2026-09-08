@@ -1,6 +1,6 @@
 export type LinkTarget = { label: string; href: string };
 
-export type CareerResourceCategory = "Resume" | "Interview" | "Salary" | "Skills" | "Workplace";
+export type CareerResourceCategory = "Resume" | "Interview" | "Salary" | "Skills" | "Career Growth" | "Workplace";
 
 export type CareerResource = {
   id: string;
@@ -11,6 +11,7 @@ export type CareerResource = {
   publishedAt?: string;
   readTime?: string;
   featured?: boolean;
+  sections?: { title: string; text: string }[];
 };
 
 export type ContactEnquiryType = "Employer" | "Candidate" | "Institute" | "General" | "Safety";

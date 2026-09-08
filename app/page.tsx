@@ -1,3 +1,4 @@
+import { jsonLd, organizationSchema, websiteSchema, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Container, GhostLink, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
@@ -15,6 +16,8 @@ import {
   getFeaturedResources,
   trustItems,
 } from "@/features/homepage/content";
+
+export const metadata = pageMetadata("/");
 
 export default async function HomePage() {
   const [featuredJobs, resources] = await Promise.all([getFeaturedJobs(6), getFeaturedResources()]);
@@ -35,16 +38,17 @@ export default async function HomePage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd([organizationSchema, websiteSchema]) }} />
       <section className="border-b border-line bg-plum-50/50">
         <Container className="grid gap-10 py-12 md:grid-cols-[1.12fr_0.88fr] md:items-center md:py-16 lg:py-20">
           <div className="animate-rise">
             <Kicker>Recruitment &amp; job marketplace</Kicker>
-            <h1 className="mt-4 max-w-[12ch] text-balance font-display text-[clamp(2.45rem,8vw,4.25rem)] font-bold leading-[1.06] text-ink">
-              Hire Better. Find Better Opportunities.
+            <h1 className="mt-4 max-w-[16ch] text-balance font-display text-[clamp(2.45rem,8vw,4.25rem)] font-bold leading-[1.06] text-ink">
+              Hire Better. Find Better <span className="text-brand-accent">Opportunities.</span>
             </h1>
             <p className="mt-5 max-w-xl text-[16px] leading-relaxed text-mist md:text-[17px]">
               Grow Biz Recruitment &amp; Placement connects companies with qualified talent through
-              recruitment services, smart hiring technology and a growing job marketplace.
+              recruitment services, hiring technology and Grow Biz Jobs, a job portal for India. Candidates can search and apply free.
             </p>
 
             <div className="mt-8 max-w-xl">
@@ -91,7 +95,7 @@ export default async function HomePage() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             {employerCapabilities.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="group rounded-card border border-line bg-paper p-4 transition-all hover:border-plum-300 hover:shadow-soft">
+              <article key={title} className="glass-interactive group rounded-card border border-line bg-paper p-4">
                 <Icon size={19} className="text-plum-600" aria-hidden="true" />
                 <h3 className="mt-3 font-display text-[15.5px] font-semibold text-ink">{title}</h3>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-mist">{text}</p>
@@ -114,10 +118,10 @@ export default async function HomePage() {
               resume, interview skills and profile visibility.
             </p>
             <div className="mt-6 flex flex-col gap-3 xs:flex-row">
-              <PrimaryButton href="/jobs" className="bg-white !text-plum-700 hover:bg-white/90">
+              <Link href="/jobs" className="inline-flex min-h-11 items-center justify-center rounded-pill bg-white px-5 py-3 text-[15px] font-semibold text-plum-700 shadow-[0_14px_30px_-18px_rgba(255,255,255,0.65)] transition hover:-translate-y-0.5 hover:bg-plum-50">
                 Browse Jobs
-              </PrimaryButton>
-              <Link href="/candidate/signup" className="inline-flex min-h-11 items-center justify-center rounded-pill border border-white/30 px-5 py-3 text-[15px] font-medium text-white transition-colors hover:bg-white/10">
+              </Link>
+              <Link href="/candidate/signup" className="inline-flex min-h-11 items-center justify-center rounded-pill border border-white/30 bg-white/[0.04] px-5 py-3 text-[15px] font-medium text-white transition hover:-translate-y-0.5 hover:border-white/55 hover:bg-white/10">
                 Create Profile
               </Link>
             </div>
@@ -152,11 +156,11 @@ export default async function HomePage() {
 
           <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {servicePreview.map((service) => (
-              <Link key={service.slug} href={`/recruitment-services#${service.slug}`} className="group rounded-card border border-line bg-white p-4 transition-all hover:border-plum-300 hover:shadow-soft">
-                <h3 className="font-display text-[15.5px] font-semibold text-ink group-hover:text-plum-700">{service.name}</h3>
+              <Link key={service.slug} href={`/recruitment-services#${service.slug}`} className="glass-interactive group rounded-card border border-line bg-white p-4">
+                <h3 className="font-display text-[15.5px] font-semibold text-ink group-hover:text-ink">{service.name}</h3>
                 <p className="mt-2 line-clamp-2 text-[13.5px] leading-relaxed text-mist">{service.problem}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-[13px] font-medium text-plum-600">
-                  Learn more <ArrowRight size={14} aria-hidden="true" />
+                  Explore service <ArrowRight size={14} className="gb-interaction-arrow" aria-hidden="true" />
                 </span>
               </Link>
             ))}
@@ -170,10 +174,10 @@ export default async function HomePage() {
             <div>
               <Kicker>Latest opportunities</Kicker>
               <h2 className="mt-4 text-balance font-display text-[30px] font-bold leading-tight text-ink md:text-[36px]">
-                Recently Added Roles
+                Explore Job Roles
               </h2>
               <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-mist">
-                Discover recently added roles from employers hiring through Grow Biz Jobs.
+                Explore the job marketplace. Current listings are demonstration examples, not confirmed live vacancies.
               </p>
             </div>
             <GhostLink href="/jobs">View All Jobs</GhostLink>
@@ -223,9 +227,9 @@ export default async function HomePage() {
             </h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {resources.map(({ icon: Icon, title, text, href }) => (
-                <Link key={title} href={href} className="group rounded-card border border-line p-4 transition-colors hover:border-plum-300">
+                <Link key={title} href={href} className="glass-interactive group rounded-card border border-line p-4 transition-colors hover:border-plum-300">
                   <Icon size={18} className="text-plum-600" aria-hidden="true" />
-                  <h3 className="mt-3 font-display text-[15.5px] font-semibold text-ink group-hover:text-plum-700">{title}</h3>
+                  <h3 className="mt-3 font-display text-[15.5px] font-semibold text-ink group-hover:text-ink">{title}</h3>
                   <p className="mt-1.5 text-[13.5px] leading-relaxed text-mist">{text}</p>
                 </Link>
               ))}

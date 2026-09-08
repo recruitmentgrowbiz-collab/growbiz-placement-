@@ -1,3 +1,4 @@
+import { seoMetadata, breadcrumbSchema, jsonLd } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { BadgeCheck, BriefcaseBusiness, Building2, Globe, MapPin } from "lucide-react";
@@ -5,7 +6,7 @@ import { Container, Kicker, SecondaryButton } from "@/components/ui";
 import { JobCard } from "@/components/JobCard";
 import { getCompanyBySlug, getCompanyStaticParams, getJobsByCompany } from "@/features/companies/services/companies";
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return getCompanyStaticParams();
@@ -13,14 +14,10 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const company = await getCompanyBySlug(params.id);
-  if (!company) return {};
+  if (!company) notFound();
   const jobs = await getJobsByCompany(company.id);
-  return {
-    title: `${company.name} Jobs & Careers | Grow Biz Jobs`,
-    description: company.description
-      ? `${company.description} View ${jobs.length} active role${jobs.length === 1 ? "" : "s"} on Grow Biz Jobs.`
-      : `View jobs and career opportunities at ${company.name} on Grow Biz Jobs.`,
-  };
+  return seoMetadata(`/companies/${company.slug}`, `${company.name} Jobs & Careers | Grow Biz Jobs`,
+    `Explore ${company.name} jobs and careers${company.industry ? ` in ${company.industry}` : ""}. View company details and ${jobs.length} listed roles on Grow Biz Jobs.`, !company.isDemo);
 }
 
 export default async function CompanyProfilePage({ params }: { params: { id: string } }) {
@@ -32,6 +29,7 @@ export default async function CompanyProfilePage({ params }: { params: { id: str
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Jobs", path: "/jobs" }, { name: company.name, path: `/companies/${company.slug}` }])) }} />
       <section className="border-b border-line bg-plum-50/60">
         <Container className="py-5">
           <nav aria-label="Breadcrumb" className="text-[13.5px] text-mist">
@@ -53,6 +51,7 @@ export default async function CompanyProfilePage({ params }: { params: { id: str
               <Building2 size={30} className="text-plum-500" aria-hidden="true" />
             </div>
             <div className="min-w-0">
+              {company.isDemo && <p className="mb-3 text-sm text-mist">Demonstration company profile. Business details and vacancies are not verified.</p>}
               <div className="flex flex-wrap items-center gap-2.5">
                 <h1 className="font-display text-[32px] font-bold leading-tight text-ink md:text-[42px]">{company.name}</h1>
                 {verified && (
@@ -80,7 +79,7 @@ export default async function CompanyProfilePage({ params }: { params: { id: str
 
       <section className="bg-paper py-10">
         <Container className="grid gap-8 lg:grid-cols-[1fr_320px]">
-          <main className="space-y-8">
+          <div className="min-w-0 space-y-8">
             {company.description && (
               <section className="rounded-card border border-line bg-white p-5 md:p-6">
                 <Kicker>Company overview</Kicker>
@@ -93,7 +92,7 @@ export default async function CompanyProfilePage({ params }: { params: { id: str
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                   <Kicker>Open roles</Kicker>
-                  <h2 className="mt-3 font-display text-[24px] font-semibold text-ink">Open Roles at {company.name}</h2>
+                  <h2 className="mt-3 font-display text-[24px] font-semibold text-ink">Jobs at {company.name}</h2>
                 </div>
                 <SecondaryButton href="/jobs">View All Jobs</SecondaryButton>
               </div>
@@ -108,7 +107,7 @@ export default async function CompanyProfilePage({ params }: { params: { id: str
                 </div>
               )}
             </section>
-          </main>
+          </div>
 
           <aside className="space-y-4">
             <section className="rounded-card border border-line bg-white p-5">

@@ -1,73 +1,39 @@
 import Link from "next/link";
 import { Container, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
-import { getCareerResources, getFeaturedCareerResources } from "@/features/public-content/services/resources";
+import { getCareerResources } from "@/features/public-content/services/resources";
+import { pageMetadata, breadcrumbSchema, jsonLd } from "@/lib/seo";
+import { publicSeo } from "@/features/public-content/seo-content";
+import { CareerResourcesClient } from "./components/CareerResourcesClient";
 
-export const metadata = {
-  title: "Career Resources | Grow Biz Jobs",
-  description: "Practical guidance for resumes, interviews, skills, workplace readiness and career growth.",
-};
-
-const categories = ["All", "Resume", "Interview", "Salary", "Skills", "Workplace"];
+export const metadata = pageMetadata("/career-resources");
 
 export default async function CareerResourcesPage() {
-  const [resources, featured] = await Promise.all([getCareerResources(), getFeaturedCareerResources()]);
+  const resources = await getCareerResources();
+  const copy = publicSeo["/career-resources"];
 
-  return (
-    <>
-      <section className="border-b border-line bg-plum-50/60">
-        <Container className="py-16 md:py-20">
-          <Kicker>Career Resources</Kicker>
-          <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">Career Resources</h1>
-          <p className="mt-4 max-w-2xl text-[16.5px] leading-relaxed text-mist">Practical guidance for resumes, interviews, skills, workplace readiness and career growth.</p>
-        </Container>
-      </section>
-      <section className="border-b border-line py-16 md:py-20">
-        <Container>
-          <Kicker>Featured resources</Kicker>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {featured.map((resource) => (
-              <article key={resource.id} className="rounded-card border border-line p-6">
-                <p className="text-[12.5px] font-medium text-plum-600">{resource.category}</p>
-                <h2 className="mt-2 font-display text-[22px] font-semibold text-ink">{resource.title}</h2>
-                <p className="mt-3 text-[14.5px] leading-relaxed text-mist">{resource.excerpt}</p>
-                <p className="mt-4 text-[12.5px] text-mist">{resource.readTime}</p>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-      <section className="border-b border-line bg-plum-50/50 py-16 md:py-20">
-        <Container>
-          <Kicker>Categories</Kicker>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {categories.map((category) => <span key={category} className="rounded-pill border border-line bg-white px-3 py-2 text-[13.5px] text-ink/80">{category}</span>)}
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {resources.map((resource) => (
-              <article key={resource.id} className="rounded-card border border-line bg-white p-5">
-                <p className="text-[12.5px] font-medium text-plum-600">{resource.category}</p>
-                <h2 className="mt-2 font-display text-[17px] font-semibold text-ink">{resource.title}</h2>
-                <p className="mt-2 text-[14px] leading-relaxed text-mist">{resource.excerpt}</p>
-                <p className="mt-4 text-[12.5px] text-mist">{resource.readTime}</p>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-      <section className="py-16 md:py-20">
-        <Container className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-card border border-line bg-plum-50/60 p-7">
-            <h2 className="font-display text-[22px] font-bold text-ink">Career Plus</h2>
-            <p className="mt-2 text-[14.5px] text-mist">Optional resume, interview and career-readiness support. It does not influence employer hiring decisions.</p>
-            <div className="mt-5"><SecondaryButton href="/career-plus">Learn More</SecondaryButton></div>
-          </div>
-          <div className="rounded-card border border-line p-7">
-            <h2 className="font-display text-[22px] font-bold text-ink">Ready to apply?</h2>
-            <p className="mt-2 text-[14.5px] text-mist">Search current opportunities and apply free.</p>
-            <div className="mt-5"><PrimaryButton href="/jobs">Search Jobs</PrimaryButton></div>
-          </div>
-        </Container>
-      </section>
-    </>
-  );
+  return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Career Resources", path: "/career-resources" }])) }} />
+    <section className="border-b border-line bg-plum-50/60">
+      <Container className="py-9 md:py-12">
+        <nav aria-label="Breadcrumb" className="mb-5 text-sm text-mist"><Link href="/" className="inline-flex min-h-11 items-center hover:text-plum-700">Home</Link><span aria-hidden="true"> / </span><span aria-current="page">Career Resources</span></nav>
+        <Kicker>Career Resources</Kicker>
+        <h1 className="mt-4 max-w-3xl font-display text-[32px] font-bold leading-tight text-ink md:text-[42px]">{copy.h1}</h1>
+        <p className="mt-4 max-w-2xl text-[15.5px] leading-relaxed text-mist">{copy.description}</p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row"><PrimaryButton href="#resources">Explore Guides</PrimaryButton><SecondaryButton href="/jobs">Search Jobs</SecondaryButton></div>
+      </Container>
+    </section>
+
+    <CareerResourcesClient resources={resources} />
+
+    <section className="bg-plum-50/60 py-10 md:py-14 border-t border-line">
+      <Container>
+        <div className="rounded-[12px] border border-line bg-white p-6 md:p-8">
+          <h2 className="font-display text-[24px] font-semibold text-ink md:text-[30px]">Ready to Put This Into Practice?</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-mist">Job applications on Grow Biz Jobs are free. Career Plus is optional preparation support and does not influence employer hiring decisions or guarantee placement.</p>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row"><PrimaryButton href="/jobs">Search Jobs</PrimaryButton><SecondaryButton href="/career-plus">Explore Optional Career Plus</SecondaryButton></div>
+          <Link href="/report" className="mt-4 inline-flex min-h-10 items-center text-sm font-medium text-plum-600 underline underline-offset-4 hover:text-plum-700">Report Suspicious Jobs</Link>
+        </div>
+      </Container>
+    </section>
+  </>;
 }

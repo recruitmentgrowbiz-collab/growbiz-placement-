@@ -62,7 +62,7 @@ export function RazorpayCheckoutButton({
         name: "Grow Biz Recruitment & Placement",
         description: `${planLabel} plan — monthly membership`,
         order_id: order.orderId,
-        theme: { color: "#5B2A82" },
+        theme: { color: `rgb(${getComputedStyle(document.documentElement).getPropertyValue("--gb-magenta-action").trim()})` },
         handler: async (response: any) => {
           const verifyRes = await fetch("/api/razorpay/verify", {
             method: "POST",

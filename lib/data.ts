@@ -311,7 +311,7 @@ export const services: Service[] = [
       "Structured screening and shortlist submission",
       "Interview coordination and feedback follow-up",
     ],
-    useCase: "Growing companies with 5-20 hires a month across mixed departments.",
+    useCase: "Growing companies hiring across several departments.",
   },
   {
     slug: "it-non-it-recruitment",
@@ -333,7 +333,7 @@ export const services: Service[] = [
     name: "Fresher & Graduate Placement",
     problem: "Fresh graduates are hard to evaluate on experience alone, and employers need volume without losing quality.",
     approach:
-      "We combine our candidate database with campus partnerships, then screen for aptitude, communication and role fit.",
+      "We source graduate candidates and coordinate campus requirements where applicable, then screen for aptitude, communication and role fit.",
     handles: [
       "Eligibility screening against your criteria",
       "Assessment coordination where required",
@@ -414,7 +414,7 @@ export const services: Service[] = [
     slug: "internship-placement",
     name: "Internship Placement",
     problem: "Employers want low-risk early talent, but internship hiring is often under-resourced internally.",
-    approach: "We source through our candidate database and campus partners, matching on availability, skill and learning goals.",
+    approach: "We source candidates against the internship brief, matching availability, skills and learning goals.",
     handles: [
       "Eligibility and availability screening",
       "Structured intern shortlist",
@@ -427,7 +427,7 @@ export const services: Service[] = [
     slug: "campus-recruitment",
     name: "Campus Recruitment",
     problem: "Building a direct pipeline into colleges takes time, relationships and coordination most companies don't have in-house.",
-    approach: "We run recruitment through our institute partnerships, handling eligibility communication, screening and drive logistics.",
+    approach: "We coordinate with participating institutes on eligibility communication, screening and drive logistics.",
     handles: [
       "Institute coordination",
       "Registration and eligibility management",
@@ -440,10 +440,10 @@ export const services: Service[] = [
     slug: "recruitment-process-outsourcing",
     name: "Recruitment Process Outsourcing (RPO)",
     problem: "Scaling hiring needs ongoing recruiter capacity, not one-off project support.",
-    approach: "We embed a dedicated recruitment team against your monthly hiring plan, billed as a retainer.",
+    approach: "We agree the recruitment scope and reporting cadence around your hiring plan, then coordinate sourcing, screening and candidate progress. Commercial terms are confirmed separately.",
     handles: [
       "Full-funnel recruiter ownership",
-      "SLA-backed delivery",
+      "Agreed delivery milestones",
       "Reporting and governance",
       "Scalable recruiter capacity as volume changes",
     ],

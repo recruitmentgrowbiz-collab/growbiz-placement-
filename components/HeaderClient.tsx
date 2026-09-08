@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
+import { useDialogFocus } from "@/components/useDialogFocus";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
@@ -21,44 +23,22 @@ export function HeaderClient({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  useDialogFocus(open, drawerRef, () => setOpen(false), 1120);
 
   useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    if (!open) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
-      if (event.key !== "Tab") return;
-
-      const focusable = drawerRef.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      if (!focusable?.length) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
+    let frame = 0;
+    const update = () => { frame = 0; setScrolled(window.scrollY > 12); };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(frame); };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-header border-b border-line bg-paper/95 shadow-[0_1px_0_rgba(231,225,239,0.65)] backdrop-blur supports-[backdrop-filter]:bg-paper/88">
+    <header data-scrolled={scrolled} className="gb-header sticky top-0 z-header border-b border-line">
       <div className="mx-auto flex min-h-[64px] max-w-content items-center justify-between gap-3 px-4 xs:px-5 md:px-8 xl:px-6">
         <Link href="/" aria-label="Grow Biz home" className="shrink-0 rounded-control">
           <Logo />
@@ -72,12 +52,11 @@ export function HeaderClient({
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative rounded-control px-3 py-2 text-[14px] font-medium leading-none transition-colors hover:text-plum-600 ${
+                className={`gb-nav-link relative rounded-control px-3 py-2 text-[14px] font-medium leading-none transition-colors hover:text-plum-600 ${
                   active ? "text-plum-700" : "text-ink/78"
                 }`}
               >
                 {item.label}
-                {active && <span className="absolute inset-x-3 -bottom-[13px] h-0.5 rounded-full bg-plum-600" />}
               </Link>
             );
           })}
@@ -92,7 +71,7 @@ export function HeaderClient({
           ))}
           {state.authenticated && (
             <form action={signOutAction}>
-              <button className="min-h-10 whitespace-nowrap rounded-pill border border-line px-3.5 py-2 text-[14px] font-medium text-ink/80 transition-colors hover:border-plum-300 hover:text-plum-600">
+              <button className="gb-button min-h-11 whitespace-nowrap rounded-pill border border-line px-3.5 py-2 text-[14px] font-medium text-ink/80 transition-colors hover:border-plum-300 hover:text-plum-600">
                 Log out
               </button>
             </form>
@@ -112,19 +91,20 @@ export function HeaderClient({
             aria-expanded={open}
             aria-controls={drawerId}
             onClick={() => setOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-control border border-line bg-white text-ink transition-colors hover:border-plum-300 hover:text-plum-600"
+            className="gb-button gb-button--icon glass-button inline-flex h-11 w-11 items-center justify-center rounded-control border bg-white text-ink transition-colors hover:border-plum-300 hover:text-plum-600"
           >
             <Menu size={21} aria-hidden="true" />
           </button>
         </div>
       </div>
 
-      {open && (
+      {open && createPortal(
         <div className="fixed inset-0 top-[64px] z-overlay min-[1120px]:hidden" role="presentation">
           <button
             type="button"
             aria-label="Close menu overlay"
-            className="absolute inset-0 h-full w-full bg-ink/24"
+            tabIndex={-1}
+            className="gb-overlay absolute inset-0 h-full w-full"
             onClick={() => setOpen(false)}
           />
           <aside
@@ -133,7 +113,7 @@ export function HeaderClient({
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
-            className="absolute right-0 top-0 flex h-[calc(100dvh-64px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-line bg-paper shadow-lift"
+            className="glass-elevated absolute right-0 top-0 flex h-[calc(100dvh-64px)] w-[min(88vw,360px)] flex-col overflow-y-auto border-l border-line bg-paper shadow-lift"
           >
             <div className="flex min-h-16 items-center justify-between border-b border-line px-5">
               <Logo />
@@ -142,7 +122,7 @@ export function HeaderClient({
                 type="button"
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-control border border-line bg-white text-ink transition-colors hover:border-plum-300 hover:text-plum-600"
+                className="gb-button gb-button--icon glass-button inline-flex h-11 w-11 items-center justify-center rounded-control border bg-white text-ink transition-colors hover:border-plum-300 hover:text-plum-600"
               >
                 <X size={20} aria-hidden="true" />
               </button>
@@ -168,7 +148,7 @@ export function HeaderClient({
               })}
             </nav>
 
-            <div className="mt-auto border-t border-line p-4">
+            <div className="gb-header-actions mt-auto border-t border-line p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <div className="grid gap-2">
                 {state.actions.map((action) => (
                   <ButtonLink key={action.href} href={action.href} variant={action.variant} className="w-full">
@@ -177,7 +157,7 @@ export function HeaderClient({
                 ))}
                 {state.authenticated && (
                   <form action={signOutAction}>
-                    <button className="min-h-11 w-full rounded-pill border border-line px-5 py-3 text-[15px] font-medium text-ink/80 transition-colors hover:border-plum-300 hover:text-plum-600">
+                    <button className="gb-button min-h-11 w-full rounded-pill border border-line px-5 py-3 text-[15px] font-medium text-ink/80 transition-colors hover:border-plum-300 hover:text-plum-600">
                       Log out
                     </button>
                   </form>
@@ -185,7 +165,7 @@ export function HeaderClient({
               </div>
             </div>
           </aside>
-        </div>
+        </div>, document.body
       )}
     </header>
   );

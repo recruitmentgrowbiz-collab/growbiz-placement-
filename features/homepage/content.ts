@@ -63,7 +63,7 @@ export const trustItems = [
 ];
 
 export const heroCards = {
-  job: { title: "Backend Engineer", meta: "Bengaluru - Rs 12L-18L" },
+  job: { title: "Find your next role", meta: "Search by skill, experience and work mode" },
   activity: { title: "Structured shortlists", meta: "Candidate summaries for active roles" },
 };
 

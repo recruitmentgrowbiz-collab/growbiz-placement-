@@ -6,12 +6,15 @@ export function Container({ children, className = "" }: { children: ReactNode; c
   return <div className={`mx-auto max-w-content px-5 md:px-8 ${className}`}>{children}</div>;
 }
 
-type ButtonLinkVariant = "primary" | "secondary" | "ghost";
+type ButtonLinkVariant = "primary" | "secondary" | "ghost" | "primary-glass" | "secondary-glass" | "ghost-glass";
 
 const buttonLinkClasses: Record<ButtonLinkVariant, string> = {
-  primary: "bg-plum-600 text-white hover:bg-plum-700 active:bg-plum-800",
-  secondary: "border border-plum-600 bg-white text-plum-600 hover:bg-plum-50 active:bg-plum-100",
-  ghost: "text-ink/80 hover:text-plum-600 active:text-plum-700",
+  primary: "gb-button--primary text-white active:bg-plum-800",
+  secondary: "gb-button--secondary border border-plum-600 bg-white text-plum-600 active:bg-plum-100",
+  ghost: "gb-button--ghost text-ink/80 hover:text-plum-600 active:text-plum-700",
+  "primary-glass": "gb-button--primary text-white active:bg-plum-800",
+  "secondary-glass": "gb-button--secondary border border-plum-600 text-plum-600 active:bg-plum-100",
+  "ghost-glass": "gb-button--ghost-glass text-ink/80 active:text-plum-700",
 };
 
 export function ButtonLink({
@@ -29,12 +32,12 @@ export function ButtonLink({
   className?: string;
   onClick?: () => void;
 }) {
-  const sizeClass = size === "sm" ? "min-h-10 px-3.5 py-2 text-[14px]" : "min-h-11 px-5 py-3 text-[15px]";
+  const sizeClass = size === "sm" ? "min-h-11 px-3.5 py-2 text-[14px]" : "min-h-11 px-5 py-3 text-[15px]";
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-pill font-medium transition-colors ${sizeClass} ${buttonLinkClasses[variant]} ${className}`}
+      className={`gb-button inline-flex items-center justify-center gap-1.5 max-w-full whitespace-normal text-center rounded-control font-medium ${sizeClass} ${buttonLinkClasses[variant]} ${className}`}
     >
       {children}
     </Link>
@@ -76,9 +79,9 @@ export function SecondaryButton({
 
 export function GhostLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center gap-1 text-[14.5px] font-medium text-plum-600 hover:text-plum-700">
+    <Link href={href} className="inline-flex min-h-11 items-center gap-1 text-[14.5px] font-medium text-plum-600 hover:text-plum-700">
       {children}
-      <ArrowUpRight size={15} />
+      <ArrowUpRight size={15} className="gb-interaction-arrow" aria-hidden="true" />
     </Link>
   );
 }

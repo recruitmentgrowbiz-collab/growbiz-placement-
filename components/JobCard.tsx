@@ -4,18 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import { Bookmark, Briefcase, Clock, MapPin, Wallet } from "lucide-react";
 import type { Job } from "@/features/jobs/types";
+import { JobCompanyAvatar } from "@/components/JobCompanyAvatar";
 
 export function JobCard({ job, showSave = false }: { job: Job; showSave?: boolean }) {
   const [saved, setSaved] = useState(false);
+  const isNew = isNewJob(job.publishedAt);
 
   return (
-    <article className="group rounded-card border border-line bg-white p-5 transition-all hover:border-plum-300 hover:shadow-soft">
+    <article className="group rounded-card border border-line bg-white p-5 shadow-soft transition duration-200 hover:-translate-y-0.5 hover:border-plum-200 hover:shadow-lift">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <Link href={`/jobs/${job.id}`} className="rounded-control font-display text-[18px] font-semibold leading-snug text-ink transition-colors hover:text-plum-700">
-            {job.title}
-          </Link>
-          <p className="mt-1 text-[14.5px] text-mist">{job.company}</p>
+        <div className="flex min-w-0 gap-3.5">
+          <JobCompanyAvatar company={job.company} size="sm" />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href={`/jobs/${job.id}`} className="rounded-control font-display text-[18px] font-semibold leading-snug text-ink transition-colors hover:text-plum-700">
+                {job.title}
+              </Link>
+              {isNew && <span className="rounded-pill bg-[rgb(var(--gb-magenta-soft))] px-2.5 py-1 text-[11.5px] font-semibold text-plum-700">New</span>}
+            </div>
+            <p className="mt-1 text-[14.5px] text-mist">{job.company}</p>
+          </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {job.fresherEligible && (
@@ -29,8 +37,8 @@ export function JobCard({ job, showSave = false }: { job: Job; showSave?: boolea
               aria-pressed={saved}
               aria-label={saved ? `Remove saved job ${job.title}` : `Save job ${job.title}`}
               onClick={() => setSaved((value) => !value)}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-control border transition-colors ${
-                saved ? "border-plum-300 bg-plum-50 text-plum-700" : "border-line text-mist hover:border-plum-300 hover:text-plum-700"
+              className={`gb-button gb-button--icon glass-button inline-flex h-11 w-11 items-center justify-center rounded-control border transition-colors ${
+                saved ? "border-plum-300 bg-plum-50 text-plum-700" : "border-line text-mist hover:border-plum-300 hover:text-plum-600"
               }`}
             >
               <Bookmark size={17} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
@@ -58,4 +66,10 @@ export function JobCard({ job, showSave = false }: { job: Job; showSave?: boolea
       </div>
     </article>
   );
+}
+
+function isNewJob(publishedAt?: string) {
+  if (!publishedAt) return false;
+  const postedAt = new Date(publishedAt).getTime();
+  return Number.isFinite(postedAt) && Date.now() - postedAt <= 24 * 60 * 60 * 1000;
 }

@@ -1,14 +1,16 @@
+import { publicSeo } from "@/features/public-content/seo-content";
+import { pageMetadata } from "@/lib/seo";
 import { Container, Kicker } from "@/components/ui";
 import { legalShells } from "@/features/public-content/mock/content";
 
-export const metadata = { title: "Terms of Service | Grow Biz Jobs" };
+export const metadata = pageMetadata("/terms");
 
 export default function TermsPage() {
   return (
     <section className="py-14 md:py-16">
       <Container className="max-w-2xl">
         <Kicker>Legal</Kicker>
-        <h1 className="mt-4 font-display text-[30px] font-bold text-ink">Terms of Service</h1>
+        <h1 className="mt-4 font-display text-[30px] font-bold text-ink">{publicSeo["/terms"].h1}</h1>
         <p className="mt-3 rounded-card border border-line bg-plum-50/60 p-4 text-[13.5px] leading-relaxed text-mist">Last updated: pending legal review. This page is a frontend placeholder for approved terms.</p>
         <div className="mt-8 divide-y divide-line border-t border-line">
           {legalShells.terms.map((section) => (

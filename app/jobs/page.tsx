@@ -1,28 +1,33 @@
 import { Suspense } from "react";
-import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { seoMetadata } from "@/lib/seo";
+import { publicSeo } from "@/features/public-content/seo-content";
 import { JobsBrowser } from "@/components/jobs/JobsBrowser";
 import { getAllJobs, getJobs } from "@/features/jobs/services/jobs";
 import { getFilterOptions, parseJobsQuery } from "@/features/jobs/utils/filters";
 
-export const metadata: Metadata = {
-  title: "Jobs | Search Latest Openings - Grow Biz Jobs",
-  description: "Search job opportunities by role, skill, location, experience and work mode.",
-};
+type Props = { searchParams: Record<string, string | string[] | undefined> };
 
-export default async function JobsPage({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
+export async function generateMetadata({ searchParams }: Props) {
+  await validResults(searchParams);
+  const filtered = Object.keys(searchParams).some(key => key !== "page");
   const query = parseJobsQuery(searchParams);
-  const [result, filterOptions] = await Promise.all([
-    getJobs(query),
-    getAllJobs().then(getFilterOptions),
-  ]);
+  const page = query.page ?? 1;
+  const copy = publicSeo["/jobs"];
+  return seoMetadata(!filtered && page > 1 ? `/jobs?page=${page}` : "/jobs",
+    page > 1 && !filtered ? `Jobs in India - Page ${page} | Grow Biz Jobs` : copy.title,
+    page > 1 && !filtered ? `Page ${page} of jobs in India. Search by skill, experience and work mode. Applications are free.` : copy.description, !filtered);
+}
 
-  return (
-    <Suspense fallback={null}>
-      <JobsBrowser result={result} query={query} filterOptions={filterOptions} />
-    </Suspense>
-  );
+async function validResults(searchParams: Props["searchParams"]) {
+  if (searchParams.page !== undefined && (typeof searchParams.page !== "string" || !/^[1-9]\d*$/.test(searchParams.page) || !Number.isSafeInteger(Number(searchParams.page)))) notFound();
+  const query = parseJobsQuery(searchParams);
+  const result = await getJobs(query);
+  if ((query.page ?? 1) > result.totalPages) notFound();
+  return { query, result };
+}
+
+export default async function JobsPage({ searchParams }: Props) {
+  const [{ query, result }, filterOptions] = await Promise.all([validResults(searchParams), getAllJobs().then(getFilterOptions)]);
+  return <Suspense fallback={null}><JobsBrowser result={result} query={query} filterOptions={filterOptions} /></Suspense>;
 }

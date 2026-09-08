@@ -1,9 +1,12 @@
+import { SITE_URL } from "@/lib/seo";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { RouteFooter } from "@/components/RouteFooter";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  icons: { icon: "data:," },
   title: {
     default: "Grow Biz Recruitment & Placement | Recruitment & Jobs",
     template: "%s | Grow Biz Recruitment & Placement",
@@ -14,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

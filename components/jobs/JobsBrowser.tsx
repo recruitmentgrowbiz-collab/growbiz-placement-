@@ -1,7 +1,10 @@
 "use client";
 
+import { publicSeo } from "@/features/public-content/seo-content";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
+import { useDialogFocus } from "@/components/useDialogFocus";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, Filter, MapPin, Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import { Container, Kicker, SecondaryButton } from "@/components/ui";
@@ -20,6 +23,14 @@ const salaryOptions = [
   { label: "Rs 6L+", value: 600000 },
   { label: "Rs 10L+", value: 1000000 },
   { label: "Rs 20L+", value: 2000000 },
+];
+
+const quickFilters: { label: string; next: Record<string, string | null> }[] = [
+  { label: "Fresher", next: { experience: "fresher" } },
+  { label: "Remote", next: { mode: "Remote" } },
+  { label: "Hybrid", next: { mode: "Hybrid" } },
+  { label: "Posted 24h", next: { freshness: "24h" } },
+  { label: "Rs 6L+", next: { salaryMin: "600000" } },
 ];
 
 export function JobsBrowser({
@@ -90,42 +101,57 @@ export function JobsBrowser({
         <Container className="py-10 md:py-12">
           <Kicker>Job search</Kicker>
           <h1 className="mt-4 max-w-2xl text-balance font-display text-[32px] font-bold leading-tight text-ink md:text-[42px]">
-            Find Jobs That Match Your Skills, Experience and Goals.
+            {publicSeo["/jobs"].h1}
           </h1>
           <p className="mt-3 max-w-xl text-[15.5px] leading-relaxed text-mist">
-            Search by role, skill, company, location and experience. Applying to jobs on Grow Biz Jobs is free.
+            Search fresher and experienced jobs by skill, location and work mode. Applying on Grow Biz Jobs is free.
           </p>
 
-          <form onSubmit={submitSearch} role="search" aria-label="Search jobs" className="mt-7 grid gap-2 rounded-card border border-line bg-white p-2 shadow-soft md:grid-cols-[1.25fr_0.9fr_0.75fr_auto] md:items-center">
-            <SearchField id="jobs-q" label="Job title, skill or company" icon={<Search size={18} aria-hidden="true" />} value={q} onChange={setQ} placeholder="Job title, skill or company" />
-            <SearchField id="jobs-location" label="Location" icon={<MapPin size={18} aria-hidden="true" />} value={location} onChange={setLocation} placeholder="Location" />
-            <label className="flex min-h-12 items-center rounded-lg px-3 text-[14.5px] text-ink md:border-l md:border-line">
+          <form onSubmit={submitSearch} role="search" aria-label="Search jobs" className="gb-search-surface mt-7 grid gap-2 rounded-[28px] border border-white/80 bg-white p-2 shadow-[0_32px_80px_-44px_rgba(15,23,42,0.42),0_18px_38px_-30px_rgba(164,0,207,0.34),0_1px_0_rgba(255,255,255,0.98)_inset,0_-1px_0_rgba(232,225,236,0.55)_inset] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_40px_92px_-48px_rgba(15,23,42,0.46),0_22px_44px_-32px_rgba(164,0,207,0.42),0_1px_0_rgba(255,255,255,0.98)_inset] md:grid-cols-[1.35fr_0.95fr_0.9fr_auto] md:items-center md:rounded-pill md:px-5 md:py-3">
+            <SearchField id="jobs-q" label="Job title, skill or company" icon={<Search size={22} aria-hidden="true" />} value={q} onChange={setQ} placeholder="Enter skills / designations / companies" />
+            <label className="flex min-h-12 items-center rounded-control px-3 text-[15.5px] text-ink md:border-l md:border-line md:pl-5">
               <span className="sr-only">Experience</span>
-              <select value={query.experience?.[0] ?? ""} onChange={(e) => navigate({ experience: e.target.value || null })} className="w-full bg-transparent text-ink focus:outline-none">
-                <option value="">Any experience</option>
+              <select value={query.experience?.[0] ?? ""} onChange={(e) => navigate({ experience: e.target.value || null })} className="w-full bg-transparent text-mist outline-none">
+                <option value="">Select experience</option>
                 {EXPERIENCE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
               </select>
             </label>
-            <button type="submit" className="min-h-11 rounded-pill bg-plum-600 px-5 py-3 text-[14.5px] font-medium text-white transition-colors hover:bg-plum-700">
-              Search Jobs
+            <SearchField id="jobs-location" label="Location" icon={<MapPin size={18} aria-hidden="true" />} value={location} onChange={setLocation} placeholder="Enter location" compact />
+            <button type="submit" className="min-h-12 rounded-pill bg-[#2457F5] px-8 py-3 text-[15px] font-semibold text-white shadow-[0_16px_32px_-18px_rgba(36,87,245,0.75)] transition hover:-translate-y-0.5 hover:bg-[#1746D8]">
+              Search
             </button>
           </form>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-[12.5px] font-medium text-mist">Quick filters</span>
+            {quickFilters.map((filter) => (
+              <button
+                key={filter.label}
+                type="button"
+                onClick={() => navigate(filter.next)}
+                className="min-h-9 rounded-pill border border-line bg-white px-3 text-[13px] font-medium text-ink/75 transition-colors hover:border-plum-300 hover:text-plum-700"
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
         </Container>
       </section>
 
       <section className="border-b border-line bg-white py-5">
         <Container className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-[14.5px] font-medium text-ink">{result.total} jobs found</p>
+            <h2 className="text-[14.5px] font-medium text-ink">{result.total} jobs found</h2>
+            {result.items.some(job => job.isDemo) && <p className="mt-1 text-sm text-mist">Demonstration listings, not confirmed live vacancies.</p>}
             <p className="mt-0.5 text-[13.5px] text-mist">{context}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button onClick={() => setDrawerOpen(true)} className="inline-flex min-h-10 items-center gap-2 rounded-pill border border-line px-3.5 text-[14px] font-medium text-ink/80 transition-colors hover:border-plum-300 lg:hidden">
               <Filter size={16} aria-hidden="true" /> Filters {activeFilters.length ? `(${activeFilters.length})` : ""}
             </button>
             <label className="inline-flex min-h-10 items-center gap-2 rounded-pill border border-line bg-white px-3.5 text-[14px] text-ink/80">
               Sort
-              <select value={query.sort ?? "relevant"} onChange={(e) => navigate({ sort: e.target.value }, false)} className="bg-transparent font-medium text-ink focus:outline-none">
+              <select value={query.sort ?? "relevant"} onChange={(e) => navigate({ sort: e.target.value }, false)} className="bg-transparent font-medium text-ink">
                 {SORT_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
               </select>
             </label>
@@ -159,7 +185,12 @@ export function JobsBrowser({
               <EmptyJobs onReset={clearAll} />
             )}
 
-            <Pagination page={result.page} totalPages={result.totalPages} navigate={navigate} />
+            <section className="mt-8 rounded-card border border-line bg-white p-5">
+              <h2 className="font-display text-lg font-semibold text-ink">Find relevant jobs in India</h2>
+              <p className="mt-3 text-sm leading-relaxed text-mist">Start with your strongest skill, then narrow by location, experience and work mode. Freshers can check eligibility and internship requirements; experienced candidates should review role scope and discuss notice period with the recruiter. Compare salary only when the employer supplies it.</p>
+              <div className="mt-3 flex flex-wrap gap-x-5"><Link className="inline-flex min-h-11 items-center text-sm text-plum-600 underline" href="/jobs?experience=fresher">Browse fresher jobs</Link><Link className="inline-flex min-h-11 items-center text-sm text-plum-600 underline" href="/career-resources">Prepare your resume and interview examples</Link></div>
+            </section>
+            <Pagination page={result.page} totalPages={result.totalPages} />
 
             <div className="mt-10 rounded-card border border-line bg-white p-5">
               <div className="flex gap-3">
@@ -191,12 +222,12 @@ export function JobsBrowser({
   );
 }
 
-function SearchField({ id, label, icon, value, onChange, placeholder }: { id: string; label: string; icon: React.ReactNode; value: string; onChange: (value: string) => void; placeholder: string }) {
+function SearchField({ id, label, icon, value, onChange, placeholder, compact = false }: { id: string; label: string; icon: React.ReactNode; value: string; onChange: (value: string) => void; placeholder: string; compact?: boolean }) {
   return (
-    <label htmlFor={id} className="flex min-h-12 items-center gap-2.5 rounded-lg px-3 text-[14.5px] text-mist md:border-r md:border-line">
+    <label htmlFor={id} className={`flex min-h-12 items-center gap-3 rounded-control px-3 text-mist ${compact ? "md:border-l md:border-line md:pl-5" : ""}`}>
       {icon}
       <span className="sr-only">{label}</span>
-      <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} autoComplete="off" className="w-full bg-transparent text-ink placeholder:text-mist/70 focus:outline-none" />
+      <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} autoComplete="off" className="w-full bg-transparent text-[15.5px] text-ink outline-none placeholder:text-mist/80" />
     </label>
   );
 }
@@ -212,8 +243,8 @@ function FilterPanel({ draft, setDraft, filterOptions, onApply, onReset, compact
         <CheckGroup title="Experience" options={EXPERIENCE_OPTIONS} values={draft.experience} onChange={(experience) => setDraft({ ...draft, experience })} />
         <CheckGroup title="Work mode" options={WORK_MODES.map((value) => ({ label: value, value }))} values={draft.mode} onChange={(mode) => setDraft({ ...draft, mode })} />
         <CheckGroup title="Job type" options={JOB_TYPES.map((value) => ({ label: value, value }))} values={draft.type} onChange={(type) => setDraft({ ...draft, type })} />
-        <CheckGroup title="Industry" options={filterOptions.industries.map((value) => ({ label: value, value }))} values={draft.industry} onChange={(industry) => setDraft({ ...draft, industry })} />
         <RadioGroup title="Freshness" options={FRESHNESS_OPTIONS} value={draft.freshness ?? ""} onChange={(freshness) => setDraft({ ...draft, freshness: freshness as FreshnessFilter || undefined })} />
+        <CheckGroup title="Industry" options={filterOptions.industries.map((value) => ({ label: value, value }))} values={draft.industry} onChange={(industry) => setDraft({ ...draft, industry })} />
         <RadioGroup title="Salary" options={salaryOptions.map((o) => ({ label: o.label, value: String(o.value) }))} value={draft.salaryMin ? String(draft.salaryMin) : ""} onChange={(salaryMin) => setDraft({ ...draft, salaryMin: salaryMin ? Number(salaryMin) : undefined })} />
       </div>
       {!compact && <button onClick={onApply} className="mt-6 min-h-11 w-full rounded-pill bg-plum-600 px-5 text-[14.5px] font-medium text-white hover:bg-plum-700">Apply Filters</button>}
@@ -258,35 +289,26 @@ function RadioGroup({ title, options, value, onChange }: { title: string; option
 
 function MobileFilterDrawer(props: { draft: FilterDraft; setDraft: (draft: FilterDraft) => void; filterOptions: FilterOptions; total: number; onApply: () => void; onReset: () => void; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && props.onClose();
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previous;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [props]);
+  const drawerRef = useRef<HTMLElement>(null);
+  useDialogFocus(true, drawerRef, props.onClose, 1024);
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-overlay lg:hidden">
-      <button aria-label="Close filters overlay" className="absolute inset-0 h-full w-full bg-ink/25" onClick={props.onClose} />
-      <aside role="dialog" aria-modal="true" aria-label="Job filters" className="absolute right-0 top-0 flex h-dvh w-[min(90vw,370px)] flex-col overflow-y-auto border-l border-line bg-paper shadow-lift">
+      <button aria-label="Close filters overlay" tabIndex={-1} className="gb-overlay absolute inset-0 h-full w-full" onClick={props.onClose} />
+      <aside ref={drawerRef} role="dialog" aria-modal="true" aria-label="Job filters" className="glass-elevated absolute right-0 top-0 flex h-dvh w-[min(90vw,370px)] flex-col overflow-y-auto border-l border-line bg-paper shadow-lift">
         <div className="flex min-h-16 items-center justify-between border-b border-line px-5">
           <p className="font-display text-[18px] font-semibold text-ink">Filters</p>
-          <button ref={closeRef} onClick={props.onClose} aria-label="Close filters" className="inline-flex h-11 w-11 items-center justify-center rounded-control border border-line bg-white text-ink"><X size={20} aria-hidden="true" /></button>
+          <button ref={closeRef} onClick={props.onClose} aria-label="Close filters" className="gb-button gb-button--icon inline-flex h-11 w-11 items-center justify-center rounded-control border border-line bg-white text-ink"><X size={20} aria-hidden="true" /></button>
         </div>
         <div className="p-5">
           <FilterPanel {...props} compact />
         </div>
         <div className="sticky bottom-0 mt-auto grid grid-cols-2 gap-3 border-t border-line bg-paper p-4">
           <button onClick={props.onReset} className="min-h-11 rounded-pill border border-line bg-white px-4 text-[14.5px] font-medium text-ink/80">Reset</button>
-          <button onClick={props.onApply} className="min-h-11 rounded-pill bg-plum-600 px-4 text-[14.5px] font-medium text-white">Show {props.total} Jobs</button>
+          <button onClick={props.onApply} className="gb-button gb-button--primary min-h-11 rounded-control bg-plum-600 px-4 text-[14.5px] font-medium text-white">Show {props.total} Jobs</button>
         </div>
       </aside>
-    </div>
+    </div>, document.body
   );
 }
 
@@ -300,19 +322,22 @@ function EmptyJobs({ onReset }: { onReset: () => void }) {
   );
 }
 
-function Pagination({ page, totalPages, navigate }: { page: number; totalPages: number; navigate: (next: Record<string, string | null>, reset?: boolean) => void }) {
+function Pagination({ page, totalPages }: { page: number; totalPages: number }) {
+  const params = useSearchParams();
   if (totalPages <= 1) return null;
-  const pages = Array.from(new Set([1, page - 1, page, page + 1, totalPages].filter((p) => p >= 1 && p <= totalPages)));
-  return (
-    <nav aria-label="Job results pagination" className="mt-8 flex flex-wrap items-center justify-center gap-2">
-      <button disabled={page <= 1} onClick={() => navigate({ page: String(page - 1) }, false)} className="inline-flex min-h-10 items-center gap-1 rounded-pill border border-line bg-white px-3.5 text-[13.5px] font-medium text-ink/80 hover:border-plum-300 disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft size={15} aria-hidden="true" /> Previous</button>
-      <div className="hidden gap-1 sm:flex">
-        {pages.map((p) => <button key={p} aria-current={p === page ? "page" : undefined} onClick={() => navigate({ page: String(p) }, false)} className={`h-10 min-w-10 rounded-pill border px-3 text-[13.5px] font-medium ${p === page ? "border-plum-600 bg-plum-600 text-white" : "border-line bg-white text-ink/75 hover:border-plum-300"}`}>{p}</button>)}
-      </div>
-      <span className="px-2 text-[13.5px] text-mist sm:hidden">Page {page} of {totalPages}</span>
-      <button disabled={page >= totalPages} onClick={() => navigate({ page: String(page + 1) }, false)} className="inline-flex min-h-10 items-center gap-1 rounded-pill border border-line bg-white px-3.5 text-[13.5px] font-medium text-ink/80 hover:border-plum-300 disabled:cursor-not-allowed disabled:opacity-40">Next <ChevronRight size={15} aria-hidden="true" /></button>
-    </nav>
-  );
+  const href = (target: number) => {
+    const next = new URLSearchParams(params.toString());
+    if (target === 1) next.delete("page"); else next.set("page", String(target));
+    return `/jobs${next.size ? `?${next}` : ""}`;
+  };
+  const pages = Array.from(new Set([1, page - 1, page, page + 1, totalPages].filter(p => p >= 1 && p <= totalPages)));
+  const style = "inline-flex min-h-11 min-w-11 items-center justify-center rounded-pill border border-line bg-white px-3 text-sm text-ink hover:border-plum-300";
+  return <nav aria-label="Job results pagination" className="mt-8 flex flex-wrap items-center justify-center gap-2">
+    {page > 1 && <Link href={href(page - 1)} rel="prev" className={style}><ChevronLeft size={15} aria-hidden="true" /> Previous</Link>}
+    <div className="hidden gap-1 sm:flex">{pages.map(p => <Link key={p} href={href(p)} aria-current={p === page ? "page" : undefined} className={`${style} ${p === page ? "!border-plum-600 !bg-plum-600 !text-white" : ""}`}>{p}</Link>)}</div>
+    <span className="text-sm text-mist sm:hidden">Page {page} of {totalPages}</span>
+    {page < totalPages && <Link href={href(page + 1)} rel="next" className={style}>Next <ChevronRight size={15} aria-hidden="true" /></Link>}
+  </nav>;
 }
 
 function makeDraft(query: JobsQuery): FilterDraft {

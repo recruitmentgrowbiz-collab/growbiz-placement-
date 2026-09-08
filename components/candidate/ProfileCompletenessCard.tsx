@@ -1,6 +1,6 @@
 export function ProfileCompletenessCard({ score, missing }: { score: number; missing: string[] }) {
   return (
-    <article className="rounded-card border border-line bg-white p-5">
+    <article className="gb-stat-card rounded-card border border-line bg-white p-5">
       <p className="text-[13px] font-medium text-mist">Profile completeness</p>
       <div className="mt-3 h-2 rounded-pill bg-plum-50">
         <div className="h-2 rounded-pill bg-plum-600" style={{ width: `${score}%` }} />

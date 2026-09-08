@@ -46,11 +46,11 @@ export function Footer() {
           <div>
             <span className="inline-flex items-center gap-2">
               <svg width="28" height="28" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-                <circle cx="8" cy="21" r="3.2" fill="#DEC7EF" />
-                <circle cx="21" cy="21" r="3.2" fill="#DEC7EF" fillOpacity="0.55" />
-                <circle cx="14.5" cy="8" r="3.4" fill="#DEC7EF" />
-                <path d="M10.4 19 13 11.5" stroke="#DEC7EF" strokeWidth="1.4" strokeLinecap="round" />
-                <path d="M18.7 19 16 11.5" stroke="#DEC7EF" strokeOpacity="0.55" strokeWidth="1.4" strokeLinecap="round" />
+                <circle cx="8" cy="21" r="3.2" fill="rgb(var(--gb-accent-200))" />
+                <circle cx="21" cy="21" r="3.2" fill="rgb(var(--gb-accent-200))" fillOpacity="0.55" />
+                <circle cx="14.5" cy="8" r="3.4" fill="rgb(var(--gb-accent-200))" />
+                <path d="M10.4 19 13 11.5" stroke="rgb(var(--gb-accent-200))" strokeWidth="1.4" strokeLinecap="round" />
+                <path d="M18.7 19 16 11.5" stroke="rgb(var(--gb-accent-200))" strokeOpacity="0.55" strokeWidth="1.4" strokeLinecap="round" />
               </svg>
               <span className="font-display text-[18px] font-bold text-white">Grow Biz</span>
             </span>

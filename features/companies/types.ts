@@ -2,6 +2,7 @@ export type CompanyVerificationStatus = "pending" | "verified" | "rejected" | "n
 
 export type Company = {
   id: string;
+  isDemo?: boolean;
   name: string;
   slug: string;
   website?: string;

@@ -1,7 +1,8 @@
+import { pageMetadata } from "@/lib/seo";
 import { Container, Kicker } from "@/components/ui";
 import { legalShells } from "@/features/public-content/mock/content";
 
-export const metadata = { title: "Privacy Policy | Grow Biz Jobs" };
+export const metadata = pageMetadata("/privacy");
 
 export default function PrivacyPage() {
   return <LegalShell title="Privacy Policy" sections={legalShells.privacy} />;

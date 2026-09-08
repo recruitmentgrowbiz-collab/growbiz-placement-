@@ -1,0 +1,27 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": [
+    "growbiz-site/**"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": [
+      "error",
+      {
+        "forbid": [
+          ">",
+          "}"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "app/layout.tsx"
+      ],
+      "rules": {
+        "@next/next/no-page-custom-font": "off"
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { isActiveJob } from "@/features/jobs/utils/lifecycle";
 import type { ExperienceFilter, FreshnessFilter, Job, JobsQuery, JobSort, JobType, WorkMode } from "@/features/jobs/types";
 
 export const WORK_MODES: WorkMode[] = ["Remote", "Hybrid", "On-site"];
@@ -73,6 +74,7 @@ export function filterJobs(jobs: Job[], query: JobsQuery) {
   const q = normalize(query.q);
   const location = normalize(query.location);
   return jobs.filter((job) => {
+    if (!isActiveJob(job)) return false;
     if (q) {
       const haystack = normalize([job.title, job.company, job.industry, ...job.tags].join(" "));
       if (!haystack.includes(q)) return false;

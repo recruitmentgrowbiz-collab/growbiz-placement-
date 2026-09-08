@@ -1,11 +1,10 @@
+import { pageMetadata } from "@/lib/seo";
+import { publicSeo } from "@/features/public-content/seo-content";
 import { ShieldAlert } from "lucide-react";
 import { ReportForm } from "@/components/ReportForm";
 import { Container, Kicker } from "@/components/ui";
 
-export const metadata = {
-  title: "Job Safety & Reporting | Grow Biz Jobs",
-  description: "Report suspicious jobs, payment requests, fake employers or misleading job information on Grow Biz Jobs.",
-};
+export const metadata = pageMetadata("/report");
 
 const signs = ["Asking candidates to pay to apply", "Requesting money to secure an interview", "Misleading employer identity", "Suspicious external links", "Requests for inappropriate personal or financial information"];
 
@@ -15,8 +14,8 @@ export default function ReportPage() {
       <section className="border-b border-line bg-plum-50/60">
         <Container className="py-16 md:py-20">
           <Kicker>Trust &amp; safety</Kicker>
-          <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">Report a Suspicious Job or Employer</h1>
-          <p className="mt-4 max-w-2xl text-[16.5px] leading-relaxed text-mist">Help us review suspicious jobs, payment requests, fake employers, misleading information or abusive behavior.</p>
+          <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">{publicSeo["/report"].h1}</h1>
+          <p className="mt-4 max-w-2xl text-[16.5px] leading-relaxed text-mist">{publicSeo["/report"].description}</p>
         </Container>
       </section>
       <section className="border-b border-line py-16 md:py-20">
@@ -34,7 +33,7 @@ export default function ReportPage() {
       <section className="py-16 md:py-20">
         <Container className="rounded-card border border-line bg-plum-50/60 p-7">
           <h2 className="font-display text-[22px] font-bold text-ink">Candidate safety reminders</h2>
-          <p className="mt-2 text-[14.5px] leading-relaxed text-mist">Applying to jobs should not require payment. Grow Biz does not guarantee placement, and hiring decisions are made by employers.</p>
+          <p className="mt-2 text-[14.5px] leading-relaxed text-mist">Job applications on Grow Biz Jobs are free. Grow Biz does not guarantee placement, and hiring decisions are made by employers.</p>
         </Container>
       </section>
     </>

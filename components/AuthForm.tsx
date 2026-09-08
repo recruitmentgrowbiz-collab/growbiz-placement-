@@ -30,7 +30,7 @@ export function Field({
         placeholder={placeholder}
         defaultValue={defaultValue}
         minLength={type === "password" ? 8 : undefined}
-        className="mt-1.5 w-full rounded-lg border border-line px-3 py-2.5 text-[14.5px] focus:border-plum-400 focus:outline-none"
+        className="mt-1.5 min-h-11 w-full rounded-control border border-line bg-white px-3 text-[14.5px] text-ink shadow-[0_8px_18px_-16px_rgba(15,23,42,0.35)] outline-none transition focus:border-plum-500 focus:ring-2 focus:ring-plum-200"
       />
     </div>
   );
@@ -42,7 +42,7 @@ export function SubmitButton({ children }: { children: React.ReactNode }) {
     <button
       type="submit"
       disabled={pending}
-      className="mt-2 rounded-pill bg-plum-600 px-5 py-3 text-[15px] font-medium text-white transition-colors hover:bg-plum-700 disabled:opacity-60"
+      className="mt-2 min-h-11 rounded-pill bg-plum-600 px-5 py-3 text-[15px] font-semibold text-white shadow-[0_18px_34px_-20px_rgba(164,0,207,0.65)] transition hover:-translate-y-0.5 hover:bg-plum-700 hover:shadow-[0_24px_44px_-24px_rgba(164,0,207,0.78)] disabled:opacity-60"
     >
       {pending ? "Please wait…" : children}
     </button>

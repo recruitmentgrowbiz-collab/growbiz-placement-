@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
+import { useDialogFocus } from "@/components/useDialogFocus";
 import { Bookmark, Flag, Share2, X } from "lucide-react";
 
 const reportReasons = [
@@ -46,7 +48,7 @@ export function ApplyPanel({
 
   return (
     <>
-      <div className={compact ? "grid grid-cols-[auto_1fr] gap-2" : "rounded-card border border-line bg-white p-5 shadow-soft"}>
+      <div className={compact ? "grid grid-cols-[auto_1fr] gap-2" : "rounded-card border border-line bg-white p-5 shadow-[0_24px_60px_-38px_rgba(15,23,42,0.46),0_10px_28px_-28px_rgba(164,0,207,0.35),0_1px_0_rgba(255,255,255,0.9)_inset]"}>
         {!compact && (
           <>
             <p className="font-display text-[18px] font-semibold text-ink">Apply for this role</p>
@@ -57,33 +59,34 @@ export function ApplyPanel({
           type="button"
           onClick={() => setSaved((value) => !value)}
           aria-pressed={saved}
-          className={`${compact ? "h-12 w-12" : "mt-5 w-full min-h-11 px-5"} inline-flex items-center justify-center gap-2 rounded-pill border font-medium transition-colors ${saved ? "border-plum-500 bg-plum-50 text-plum-700" : "border-line text-ink/80 hover:border-plum-300"}`}
+          aria-label={compact ? (saved ? "Unsave job" : "Save job") : undefined}
+          className={`${compact ? "h-12 w-12" : "mt-5 w-full min-h-11 px-5"} inline-flex items-center justify-center gap-2 rounded-pill border bg-white font-medium shadow-sm transition hover:-translate-y-0.5 ${saved ? "border-plum-500 bg-plum-50 text-plum-700" : "border-line text-ink/80 hover:border-plum-300 hover:text-plum-700"}`}
         >
           <Bookmark size={17} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
           {!compact && (saved ? "Saved" : "Save Job")}
         </button>
         {closed ? (
-          <Link href="/jobs" className={`${compact ? "min-h-12" : "mt-3 min-h-11"} inline-flex items-center justify-center rounded-pill bg-plum-600 px-5 text-[15px] font-medium text-white hover:bg-plum-700`}>
+          <Link href="/jobs" className={`${compact ? "min-h-12" : "mt-3 min-h-12"} gb-button gb-button--primary inline-flex items-center justify-center rounded-control bg-plum-600 px-5 text-[15px] font-semibold text-white hover:bg-plum-700`}>
             Browse Similar Jobs
           </Link>
         ) : (
-          <Link href={`/candidate/signup?returnTo=${returnTo}`} className={`${compact ? "min-h-12" : "mt-3 min-h-11 w-full"} inline-flex items-center justify-center rounded-pill bg-plum-600 px-5 text-[15px] font-medium text-white hover:bg-plum-700`}>
+          <Link href={`/candidate/signup?returnTo=${returnTo}`} className={`${compact ? "min-h-12" : "mt-3 min-h-12 w-full"} gb-button gb-button--primary inline-flex items-center justify-center rounded-control bg-plum-600 px-5 text-[15px] font-semibold text-white hover:bg-plum-700`}>
             Apply Now
           </Link>
         )}
         {!compact && (
           <>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <button onClick={shareJob} className="min-h-10 rounded-pill border border-line px-3 text-[13.5px] font-medium text-ink/80 hover:border-plum-300">
+              <button onClick={shareJob} className="gb-button min-h-11 rounded-control border border-line bg-white px-3 text-[13.5px] font-medium text-ink/80 shadow-sm hover:border-plum-300 hover:text-plum-700">
                 <Share2 size={15} className="mr-1 inline" aria-hidden="true" /> Share
               </button>
-              <button onClick={() => setReportOpen(true)} className="min-h-10 rounded-pill border border-line px-3 text-[13.5px] font-medium text-ink/80 hover:border-plum-300">
+              <button onClick={() => setReportOpen(true)} className="gb-button min-h-11 rounded-control border border-line bg-white px-3 text-[13.5px] font-medium text-ink/80 shadow-sm hover:border-plum-300 hover:text-plum-700">
                 <Flag size={15} className="mr-1 inline" aria-hidden="true" /> Report
               </button>
             </div>
             {shareMessage && <p className="mt-2 text-center text-[12.5px] text-plum-700">{shareMessage}</p>}
             {screeningQuestions.length > 0 && (
-              <div className="mt-5 border-t border-line pt-4">
+              <div className="mt-5 rounded-card bg-plum-50/55 p-4">
                 <p className="text-[13px] font-medium text-mist">Screening questions may include</p>
                 <ul className="mt-2 grid gap-2 text-[13.5px] text-ink/78">
                   {screeningQuestions.slice(0, 3).map((question) => <li key={question}>{question}</li>)}
@@ -101,28 +104,23 @@ export function ApplyPanel({
 function ReportDialog({ jobTitle, onClose }: { jobTitle: string; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const [noted, setNoted] = useState(false);
-
-  useEffect(() => {
-    closeRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(true, dialogRef, onClose);
 
   function submit(event: FormEvent) {
     event.preventDefault();
     setNoted(true);
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-overlay flex items-end justify-center bg-ink/40 p-0 sm:items-center sm:p-4">
-      <div role="dialog" aria-modal="true" aria-labelledby="report-title" className="w-full max-w-lg rounded-t-card bg-white p-6 shadow-lift sm:rounded-card">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="report-title" className="glass-elevated gb-dialog w-full max-w-lg rounded-t-card p-6 sm:rounded-card">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id="report-title" className="font-display text-[18px] font-semibold text-ink">Report job</h2>
             <p className="mt-1 text-[13.5px] text-mist">{jobTitle}</p>
           </div>
-          <button ref={closeRef} onClick={onClose} aria-label="Close report dialog" className="text-mist hover:text-ink"><X size={20} /></button>
+          <button ref={closeRef} onClick={onClose} aria-label="Close report dialog" className="gb-button gb-button--icon shrink-0 text-mist hover:text-ink"><X size={20} /></button>
         </div>
         {noted ? (
           <div className="mt-6 rounded-card bg-plum-50 p-4 text-[14px] leading-relaxed text-ink/80">
@@ -141,10 +139,10 @@ function ReportDialog({ jobTitle, onClose }: { jobTitle: string; onClose: () => 
               Details
               <textarea className="min-h-24 rounded-control border border-line px-3 py-2.5 text-[14px] font-normal" placeholder="Share anything candidates or moderators should know." />
             </label>
-            <button className="min-h-11 rounded-pill bg-plum-600 px-5 text-[14.5px] font-medium text-white">Prepare Report</button>
+            <button className="gb-button gb-button--primary min-h-11 rounded-control bg-plum-600 px-5 text-[14.5px] font-medium text-white">Prepare Report</button>
           </form>
         )}
       </div>
-    </div>
+    </div>, document.body
   );
 }
