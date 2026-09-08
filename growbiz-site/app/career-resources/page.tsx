@@ -4,6 +4,7 @@ import { Container, Kicker, PrimaryButton } from "@/components/ui";
 import { CareerPlusCheckout } from "@/components/candidate/CareerPlusCheckout";
 import { ResumeFeedbackPanel } from "@/components/candidate/ResumeFeedbackPanel";
 import { createClient } from "@/lib/supabase/server";
+import { getCareerPlusExpiresAt } from "@/lib/career-plus";
 
 export const metadata = {
   title: "Career Resources",
@@ -47,12 +48,7 @@ export default async function CareerResourcesPage() {
 
   let expiresAt: string | null = null;
   if (user) {
-    const { data: candidate } = await supabase
-      .from("candidates")
-      .select("career_plus_expires_at")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    expiresAt = candidate?.career_plus_expires_at ?? null;
+    expiresAt = await getCareerPlusExpiresAt(user.id);
   }
   const isActive = !!expiresAt && new Date(expiresAt) > new Date();
 

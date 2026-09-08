@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateWithAI, AIUnavailableError } from "@/lib/ai";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { hasActiveCareerPlus } from "@/lib/career-plus";
 
 export async function POST(_req: NextRequest) {
   const supabase = createClient();
@@ -24,7 +25,7 @@ export async function POST(_req: NextRequest) {
   // /pricing and /career-resources since early in this session with nothing
   // behind it — gating it here is what actually makes that a real feature
   // rather than a line item on a pricing card.
-  const hasCareerPlus = candidate.career_plus_expires_at && new Date(candidate.career_plus_expires_at) > new Date();
+  const hasCareerPlus = await hasActiveCareerPlus(user.id);
   if (!hasCareerPlus) {
     return NextResponse.json(
       { error: "AI resume feedback is a Career Plus benefit. Activate it from /career-resources." },
