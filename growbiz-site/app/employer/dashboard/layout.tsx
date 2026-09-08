@@ -4,6 +4,7 @@ import { Container } from "@/components/ui";
 const tabs = [
   { label: "Overview", href: "/employer/dashboard" },
   { label: "Jobs", href: "/employer/dashboard/jobs" },
+  { label: "Applicants", href: "/employer/dashboard/applicants" },
   { label: "Candidates", href: "/employer/dashboard/candidates" },
   { label: "Company profile", href: "/employer/dashboard/company" },
   { label: "Plan", href: "/employer/dashboard/plan" },

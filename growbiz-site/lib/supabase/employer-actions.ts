@@ -158,6 +158,7 @@ export async function updateApplicationStage(applicationId: string, jobId: strin
   const supabase = createClient();
   await supabase.from("applications").update({ stage }).eq("id", applicationId);
   revalidatePath(`/employer/dashboard/jobs/${jobId}`);
+  revalidatePath("/employer/dashboard/applicants");
 
   const { data: app } = await supabase
     .from("applications")
