@@ -5,12 +5,28 @@ import Link from "next/link";
 import { X, CheckCircle2, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
+const DEMO_SAVED_JOBS_KEY = "growbiz_demo_saved_jobs";
+
+function getDemoSavedJobs() {
+  try {
+    return JSON.parse(window.localStorage.getItem(DEMO_SAVED_JOBS_KEY) ?? "[]") as {
+      id: string;
+      title: string;
+      company: string;
+    }[];
+  } catch {
+    return [];
+  }
+}
+
 export function ApplyPanel({
+  jobId,
   jobTitle,
   company,
   screeningQuestions,
   dbJobId,
 }: {
+  jobId: string;
   jobTitle: string;
   company: string;
   screeningQuestions: string[];
@@ -27,7 +43,10 @@ export function ApplyPanel({
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!dbJobId) return;
+    if (!dbJobId) {
+      setSaved(getDemoSavedJobs().some((job) => job.id === jobId));
+      return;
+    }
     const supabase = createClient();
     if (open) setCheckingAuth(true);
     supabase.auth.getUser().then(async ({ data }) => {
@@ -43,7 +62,7 @@ export function ApplyPanel({
       }
       if (open) setCheckingAuth(false);
     });
-  }, [open, dbJobId]);
+  }, [open, dbJobId, jobId]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -105,6 +124,14 @@ export function ApplyPanel({
   async function toggleSave() {
     setSaveError(null);
     if (!dbJobId) {
+      const savedJobs = getDemoSavedJobs();
+      const nextSaved = !saved;
+      const nextJobs = nextSaved
+        ? [...savedJobs.filter((job) => job.id !== jobId), { id: jobId, title: jobTitle, company }]
+        : savedJobs.filter((job) => job.id !== jobId);
+      window.localStorage.setItem(DEMO_SAVED_JOBS_KEY, JSON.stringify(nextJobs));
+      window.dispatchEvent(new Event("growbiz-demo-saved-jobs-change"));
+      setSaved(nextSaved);
       return;
     }
     const supabase = createClient();
@@ -155,8 +182,7 @@ export function ApplyPanel({
           </button>
           <button
             onClick={toggleSave}
-            disabled={!dbJobId || savingJob}
-            title={!dbJobId ? "Demo listings cannot be saved to your dashboard." : undefined}
+            disabled={savingJob}
             className={`rounded-pill border px-5 py-3 text-[15px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
               saved
                 ? "border-plum-600 bg-plum-50 text-plum-700"
@@ -166,9 +192,6 @@ export function ApplyPanel({
             {savingJob ? "Saving…" : saved ? "Saved" : "Save Job"}
           </button>
         </div>
-        {!dbJobId && (
-          <p className="mt-2 text-[12.5px] text-mist">Demo listing — saving is available on live jobs.</p>
-        )}
         {saveError && <p className="mt-2 text-[12.5px] text-red-700">{saveError}</p>}
       </div>
 

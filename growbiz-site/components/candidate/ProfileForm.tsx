@@ -50,6 +50,7 @@ export function ProfileForm({
   const [discoverable, setDiscoverable] = useState(initial?.discoverable ?? true);
   const [skills, setSkills] = useState((initial?.skills ?? []).join(", "));
   const [resumeName, setResumeName] = useState(initial?.resume_filename ?? "");
+  const [resumePath, setResumePath] = useState(initial?.resume_url ?? "");
   const [file, setFile] = useState<File | null>(null);
   const [experience, setExperience] = useState(initialExperience);
   const [education, setEducation] = useState(initialEducation);
@@ -138,7 +139,39 @@ export function ProfileForm({
       return;
     }
     setResumeName(file.name);
+    setResumePath(path);
     setFile(null);
+    markSaved(setResumeState);
+  }
+
+  async function removeResume() {
+    if (!resumePath && !resumeName) return;
+    setResumeState("saving");
+    setResumeError(null);
+    const supabase = createClient();
+
+    if (resumePath) {
+      const { error: removeError } = await supabase.storage.from("resumes").remove([resumePath]);
+      if (removeError) {
+        setResumeError(removeError.message);
+        setResumeState("idle");
+        return;
+      }
+    }
+
+    const { error } = await saveCandidateFields({
+      resume_url: null,
+      resume_filename: null,
+    });
+    if (error) {
+      setResumeError(error.message);
+      setResumeState("idle");
+      return;
+    }
+
+    setFile(null);
+    setResumeName("");
+    setResumePath("");
     markSaved(setResumeState);
   }
 
@@ -355,9 +388,21 @@ export function ProfileForm({
           </label>
           <span className="text-[13px] text-mist">{file?.name || resumeName || "No file uploaded yet"}</span>
         </div>
-        <button type="submit" disabled={!file || resumeState === "saving"} className="mt-4 w-fit rounded-pill bg-plum-600 px-5 py-2.5 text-[14.5px] font-medium text-white hover:bg-plum-700 disabled:opacity-60">
-          {resumeState === "saving" ? "Uploading..." : "Save resume"}
-        </button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button type="submit" disabled={!file || resumeState === "saving"} className="w-fit rounded-pill bg-plum-600 px-5 py-2.5 text-[14.5px] font-medium text-white hover:bg-plum-700 disabled:opacity-60">
+            {resumeState === "saving" ? "Uploading..." : "Save resume"}
+          </button>
+          {(resumeName || resumePath) && (
+            <button
+              type="button"
+              onClick={removeResume}
+              disabled={resumeState === "saving"}
+              className="w-fit rounded-pill border border-line px-5 py-2.5 text-[14.5px] font-medium text-ink/70 hover:border-plum-300 disabled:opacity-60"
+            >
+              Remove resume
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

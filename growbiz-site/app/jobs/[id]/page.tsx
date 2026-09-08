@@ -84,6 +84,7 @@ export default async function JobDetailPage({ params }: { params: { id: string }
             </div>
 
             <ApplyPanel
+              jobId={job.id}
               jobTitle={job.title}
               company={job.company}
               screeningQuestions={job.screeningQuestions}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container, Kicker } from "@/components/ui";
 import { ProfileForm } from "@/components/candidate/ProfileForm";
+import { SavedJobsList } from "@/components/candidate/SavedJobsList";
 import { createClient } from "@/lib/supabase/server";
 import type { Candidate } from "@/lib/supabase/types";
 
@@ -120,26 +121,7 @@ export default async function CandidateDashboardPage() {
               <p className="mt-2 text-[13px] text-mist">{score}% complete</p>
             </div>
 
-            <div className="rounded-card border border-line p-5">
-              <p className="text-[13px] font-medium text-mist">
-                Saved jobs ({savedJobs?.length ?? 0})
-              </p>
-              <div className="mt-3 flex flex-col gap-2">
-                {savedJobs && savedJobs.length > 0 ? (
-                  savedJobs.map((s: any) => (
-                    <Link
-                      key={s.job_id}
-                      href={`/jobs/${s.job_id}`}
-                      className="text-[13.5px] font-medium text-ink hover:text-plum-600"
-                    >
-                      {s.jobs?.title}
-                    </Link>
-                  ))
-                ) : (
-                  <p className="text-[13px] text-mist">No saved jobs yet.</p>
-                )}
-              </div>
-            </div>
+            <SavedJobsList savedJobs={(savedJobs as any) ?? []} />
           </aside>
         </div>
       </Container>
