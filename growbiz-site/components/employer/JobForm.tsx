@@ -118,7 +118,19 @@ export function JobForm() {
             <option>Contract</option>
           </select>
         </div>
-        <Field label="Min. experience (years)" name="experienceMin" type="number" required={false} placeholder="0" />
+        <div>
+          <label htmlFor="experienceMin" className="text-[13.5px] font-medium text-ink">
+            Min. experience (years)
+          </label>
+          <input
+            id="experienceMin"
+            name="experienceMin"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="0"
+            className="mt-1.5 w-full rounded-lg border border-line px-3 py-2.5 text-[14.5px] focus:border-plum-400 focus:outline-none"
+          />
+        </div>
         <div className="flex items-end pb-2.5">
           <label className="flex items-center gap-2 text-[14px] text-ink/80">
             <input type="checkbox" name="fresherEligible" className="h-4 w-4 rounded border-line accent-plum-600" />
