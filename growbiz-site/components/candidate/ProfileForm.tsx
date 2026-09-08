@@ -118,7 +118,10 @@ export function ProfileForm({
 
   async function saveResume(e: FormEvent) {
     e.preventDefault();
-    if (!file) return;
+    if (!file) {
+      setResumeError("Choose a resume file first.");
+      return;
+    }
     setResumeState("saving");
     setResumeError(null);
     const supabase = createClient();
@@ -389,7 +392,7 @@ export function ProfileForm({
           <span className="text-[13px] text-mist">{file?.name || resumeName || "No file uploaded yet"}</span>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <button type="submit" disabled={!file || resumeState === "saving"} className="w-fit rounded-pill bg-plum-600 px-5 py-2.5 text-[14.5px] font-medium text-white hover:bg-plum-700 disabled:opacity-60">
+          <button type="submit" disabled={resumeState === "saving"} className="w-fit rounded-pill bg-plum-600 px-5 py-2.5 text-[14.5px] font-medium text-white hover:bg-plum-700 disabled:opacity-60">
             {resumeState === "saving" ? "Uploading..." : "Save resume"}
           </button>
           {(resumeName || resumePath) && (
