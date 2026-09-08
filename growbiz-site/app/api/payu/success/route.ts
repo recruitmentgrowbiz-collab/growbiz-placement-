@@ -41,19 +41,22 @@ export async function POST(req: NextRequest) {
   // the same transaction.
   if (payment.status === "paid") {
     return NextResponse.redirect(
-      payment.candidate_id ? `${appUrl}/career-resources` : `${appUrl}/employer/dashboard/plan`
+      payment.candidate_id || payment.plan === "career_plus"
+        ? `${appUrl}/career-resources`
+        : `${appUrl}/employer/dashboard/plan`
     );
   }
 
   await markPaymentPaid(admin, payment.id, mihpayid);
 
-  if (payment.candidate_id) {
+  const careerPlusCandidateId = payment.candidate_id ?? (payment.plan === "career_plus" ? payment.created_by : null);
+  if (careerPlusCandidateId) {
     const expiresAt = new Date();
     expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     await admin
       .from("candidates")
       .update({ career_plus_expires_at: expiresAt.toISOString() })
-      .eq("user_id", payment.candidate_id);
+      .eq("user_id", careerPlusCandidateId);
 
     return NextResponse.redirect(`${appUrl}/career-resources`);
   }

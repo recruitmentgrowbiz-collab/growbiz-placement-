@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { generateTxnId, generateRequestHash, getPayUCredentials, PAYU_PAYMENT_URL, CAREER_PLUS_PRICE_PAISE } from "@/lib/payu";
-import { insertPaymentRecord } from "@/lib/payment-records";
+import { insertCandidatePaymentRecord } from "@/lib/payment-records";
 
 export async function POST(_req: NextRequest) {
   const supabase = createClient();
@@ -32,7 +33,8 @@ export async function POST(_req: NextRequest) {
 
     const hash = generateRequestHash({ txnid, amount, productinfo, firstname, email });
 
-    const paymentInsert = await insertPaymentRecord(supabase, {
+    const admin = createAdminClient();
+    const paymentInsert = await insertCandidatePaymentRecord(supabase, admin, {
       candidate_id: user.id,
       plan: "career_plus",
       amount_paise: CAREER_PLUS_PRICE_PAISE,
