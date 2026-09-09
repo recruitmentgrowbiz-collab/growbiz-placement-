@@ -18,8 +18,8 @@ export function PreferencesForm({ initial }: { initial: CandidatePreferences }) 
         <Field label="Industries" value={initial.industries?.join(", ") ?? ""} />
         <section className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">Salary Expectation</h2><div className="mt-4 grid gap-4 sm:grid-cols-3"><label className="text-[13.5px] font-medium text-ink">Amount<input defaultValue={initial.salary?.amount} type="number" className="mt-1.5 min-h-11 w-full rounded-card border border-line px-3" /></label><label className="text-[13.5px] font-medium text-ink">Currency<input defaultValue={initial.salary?.currency ?? "INR"} className="mt-1.5 min-h-11 w-full rounded-card border border-line px-3" /></label><label className="text-[13.5px] font-medium text-ink">Period<select defaultValue={initial.salary?.period ?? "year"} className="mt-1.5 min-h-11 w-full rounded-card border border-line px-3"><option value="year">Year</option><option value="month">Month</option></select></label></div></section>
       </div>
-      {state === "saved" && <p className="mt-5 rounded-card bg-plum-50 p-3 text-[13.5px] text-ink/80">Saved in frontend mock state. Backend persistence is not connected yet.</p>}
-      <button className="mt-5 min-h-11 rounded-pill bg-plum-600 px-5 text-[14.5px] font-medium text-white">{state === "saving" ? "Saving..." : "Save Preferences"}</button>
+      {state === "saved" && <p className="mt-5 rounded-card bg-plum-50 p-3 text-[13.5px] text-ink/80">Saved.</p>}
+      <button className="gb-button gb-button--primary mt-5 min-h-11 rounded-control bg-plum-600 px-5 text-[14.5px] font-semibold text-white">{state === "saving" ? "Saving..." : "Save Preferences"}</button>
     </form>
   );
 }

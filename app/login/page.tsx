@@ -28,27 +28,27 @@ export default function LoginPage() {
           <Kicker><span className="text-plum-200">Grow Biz access</span></Kicker>
           <h1 className="mt-5 max-w-lg font-display text-[36px] font-bold leading-tight md:text-[48px]">Log in</h1>
           <p className="mt-4 max-w-md text-[15.5px] leading-relaxed text-white/72">
-            Candidates and employers both log in here. Grow Biz routes you to the right dashboard after sign in.
+            Candidates and employers can securely access their Grow Biz workspace. After sign-in, you'll be routed to the workspace linked to your account.
           </p>
 
           <div className="mt-8 rounded-card border border-white/10 bg-white/[0.045] p-4 xs:p-5">
-            <div className="grid grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-2 xs:grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] xs:gap-3">
-              <div className="min-w-0 rounded-card bg-white/[0.06] p-3 xs:p-4">
+            <div className="grid grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-1.5 xs:grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] xs:gap-3">
+              <div className="min-w-0 rounded-card bg-white/[0.06] p-2.5 xs:p-4">
                 <BriefcaseBusiness size={20} className="text-plum-200" aria-hidden="true" />
-                <p className="mt-3 font-display text-[14.5px] font-semibold xs:text-[16px]">Employers</p>
-                <p className="mt-1 text-[12px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; applicants</p>
+                <p className="mt-2 xs:mt-3 font-display text-[12.5px] font-semibold break-words xs:text-[16px]">Employers</p>
+                <p className="mt-1 text-[11px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; applicants</p>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-plum-600 shadow-[0_0_28px_rgba(201,13,255,0.34)] xs:h-11 xs:w-11">
-                <Route size={17} aria-hidden="true" />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-plum-600 shadow-[0_0_28px_rgba(201,13,255,0.34)] xs:h-11 xs:w-11">
+                <Route size={16} aria-hidden="true" />
               </div>
-              <div className="min-w-0 rounded-card bg-white/[0.06] p-3 xs:p-4">
+              <div className="min-w-0 rounded-card bg-white/[0.06] p-2.5 xs:p-4">
                 <UserRound size={20} className="text-plum-200" aria-hidden="true" />
-                <p className="mt-3 font-display text-[14.5px] font-semibold xs:text-[16px]">Candidates</p>
-                <p className="mt-1 text-[12px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; profile</p>
+                <p className="mt-2 xs:mt-3 font-display text-[12.5px] font-semibold break-words xs:text-[16px]">Candidates</p>
+                <p className="mt-1 text-[11px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; profile</p>
               </div>
             </div>
             <div className="mt-5 grid gap-2.5">
-              {["Secure account access", "Role-based dashboard routing", "Password or verified phone login"].map((item) => (
+              {["Secure account access", "Role-based workspace routing", "Verified account sign-in"].map((item) => (
                 <div key={item} className="flex items-center gap-2 rounded-card bg-white/[0.055] px-3 py-3 text-[12.5px] leading-snug text-white/75 xs:px-4 xs:text-[13.5px]">
                   <Check size={15} className="text-plum-200" aria-hidden="true" />
                   {item}

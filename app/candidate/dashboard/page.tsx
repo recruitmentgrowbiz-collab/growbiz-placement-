@@ -29,7 +29,7 @@ export default async function CandidateDashboardPage() {
   return (
     <div>
       <p className="text-[13px] font-medium text-plum-600">Candidate dashboard</p>
-      <h1 className="mt-2 font-display text-[28px] font-bold text-ink">Welcome back, {candidate.name.split(" ")[0]}</h1>
+      <h1 className="mt-2 font-display text-[24px] font-bold text-ink md:text-[28px]">Welcome back, {candidate.name.split(" ")[0]}</h1>
       <p className="mt-2 text-[15px] text-mist">Continue building your profile and track your applications.</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {quickActions.map(({ label, href, icon: Icon }) => <Link key={href} href={href} className="glass-interactive flex min-h-16 items-center gap-3 rounded-card border border-line bg-white p-4 text-[14px] font-medium text-ink hover:border-plum-300"><Icon size={18} className="text-plum-600" />{label}</Link>)}
@@ -42,10 +42,10 @@ export default async function CandidateDashboardPage() {
               <Link href="/candidate/applications" className="text-[13.5px] font-medium text-plum-600">View All Applications</Link>
             </div>
             <div className="mt-4 grid gap-3">
-              {applications.slice(0, 3).map((app) => {
+              {applications.length ? applications.slice(0, 3).map((app) => {
                 const job = jobById.get(app.jobId);
                 return <Link key={app.id} href={`/candidate/applications/${app.id}`} className="gb-table-row rounded-card border border-line p-4 hover:border-plum-300"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-medium text-ink">{job?.title}</p><p className="text-[13px] text-mist">{job?.company} - Applied {app.createdAt}</p></div><ApplicationStatusBadge stage={app.stage} /></div><p className="mt-2 text-[13px] text-mist">Last updated {app.updatedAt}</p></Link>;
-              })}
+              }) : <p className="rounded-card border border-dashed border-line p-5 text-center text-[14px] text-mist">No applications yet.</p>}
             </div>
           </section>
           <section>

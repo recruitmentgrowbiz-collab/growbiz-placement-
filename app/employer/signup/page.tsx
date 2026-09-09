@@ -12,6 +12,23 @@ const initialState: ActionState = { error: null };
 export default function EmployerSignupPage() {
   const [state, formAction] = useFormState(signUpEmployer, initialState);
 
+  if (state.success) {
+    return (
+      <section className="bg-plum-50/45 py-16 md:py-24">
+        <Container className="max-w-md rounded-card border border-line bg-white p-6 shadow-soft md:p-8">
+          <Kicker>Verify account</Kicker>
+          <h1 className="mt-4 font-display text-[28px] font-bold text-ink">Check your email</h1>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-mist">
+            We sent a verification link to {state.email}. Verify your email before continuing employer setup and business verification.
+          </p>
+          <div className="mt-7">
+            <Link href="/login" className="gb-button gb-button--primary inline-flex min-h-11 items-center justify-center rounded-control bg-plum-600 px-5 py-3 text-[15px] font-semibold text-white">Back to login</Link>
+          </div>
+        </Container>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-plum-50/45 py-10 md:py-16">
       <Container className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
@@ -53,7 +70,9 @@ export default function EmployerSignupPage() {
           <form action={formAction} className="mt-7 flex flex-col gap-4">
             <Field label="Your full name" name="fullName" />
             <Field label="Work email" name="email" type="email" />
+            <Field label="Phone" name="phone" type="tel" required={false} />
             <Field label="Password" name="password" type="password" placeholder="At least 8 characters" />
+            <Field label="Confirm password" name="confirmPassword" type="password" />
             <Field label="Company name" name="companyName" />
             <Field label="Company website" name="website" required={false} placeholder="https://" />
             <FormError error={state.error} />

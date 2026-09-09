@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
-export type ActionState = { error: string | null };
+export type ActionState = { error: string | null; success?: boolean; email?: string };
 
 export async function signUpCandidate(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const allowed = await checkRateLimit(`signup:${getClientIp()}`, 5, 3600);
@@ -13,13 +13,18 @@ export async function signUpCandidate(_prev: ActionState, formData: FormData): P
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
   const fullName = String(formData.get("fullName") ?? "");
+  const phone = String(formData.get("phone") ?? "");
+
+  if (!fullName.trim()) return { error: "Enter your full name." };
+  if (password !== confirmPassword) return { error: "Passwords do not match." };
 
   const supabase = createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { role: "candidate", full_name: fullName } },
+    options: { data: { role: "candidate", full_name: fullName.trim(), phone: phone.trim() || null } },
   });
 
   if (error) return { error: error.message };
@@ -34,10 +39,8 @@ export async function signUpCandidate(_prev: ActionState, formData: FormData): P
     return { error: "An account with this email already exists. Try logging in instead." };
   }
 
-  // Create the matching candidates row (profile row is created by DB trigger).
-  await supabase.from("candidates").insert({ user_id: data.user.id });
-
-  redirect("/candidate/dashboard");
+  if (data.session) await supabase.auth.signOut();
+  return { error: null, success: true, email };
 }
 
 export async function signUpEmployer(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -46,15 +49,21 @@ export async function signUpEmployer(_prev: ActionState, formData: FormData): Pr
 
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
   const fullName = String(formData.get("fullName") ?? "");
   const companyName = String(formData.get("companyName") ?? "");
   const website = String(formData.get("website") ?? "");
+  const phone = String(formData.get("phone") ?? "");
+
+  if (!fullName.trim()) return { error: "Enter your full name." };
+  if (!companyName.trim()) return { error: "Enter your company name." };
+  if (password !== confirmPassword) return { error: "Passwords do not match." };
 
   const supabase = createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { role: "employer", full_name: fullName } },
+    options: { data: { role: "employer", full_name: fullName.trim(), phone: phone.trim() || null, company_name: companyName.trim(), website: website.trim() || null } },
   });
 
   if (error) return { error: error.message };
@@ -64,21 +73,8 @@ export async function signUpEmployer(_prev: ActionState, formData: FormData): Pr
     return { error: "An account with this email already exists. Try logging in instead." };
   }
 
-  const { data: company, error: companyError } = await supabase
-    .from("companies")
-    .insert({ name: companyName, website })
-    .select()
-    .single();
-
-  if (companyError) return { error: companyError.message };
-
-  await supabase
-    .from("company_users")
-    .insert({ company_id: company.id, user_id: data.user.id, role: "owner" });
-
-  await supabase.from("memberships").insert({ company_id: company.id, plan: "free" });
-
-  redirect("/employer/dashboard");
+  if (data.session) await supabase.auth.signOut();
+  return { error: null, success: true, email };
 }
 
 export async function signIn(_prev: ActionState, formData: FormData): Promise<ActionState> {

@@ -16,8 +16,8 @@ export function SettingsForm({ initial }: { initial: CandidateSettings }) {
         <section className="rounded-card border border-line bg-white p-5"><h2 className="font-display text-[18px] font-semibold text-ink">Data & Privacy</h2><div className="mt-4 flex flex-col gap-3 sm:flex-row"><button type="button" className="min-h-11 rounded-pill border border-line px-4 text-[14px] font-medium text-ink/75">Request My Data</button><button type="button" className="min-h-11 rounded-pill border border-line px-4 text-[14px] font-medium text-ink/75">Delete Account Request</button></div></section>
         <section className="rounded-card border border-line bg-plum-50/60 p-5"><h2 className="font-display text-[18px] font-semibold text-ink">Career Plus</h2><p className="mt-2 text-[14px] text-mist">Optional support only. It does not influence employer hiring decisions.</p></section>
       </div>
-      {state === "saved" && <p className="mt-5 rounded-card bg-plum-50 p-3 text-[13.5px] text-ink/80">Saved in frontend mock state. Backend persistence is not connected yet.</p>}
-      <button className="mt-5 min-h-11 rounded-pill bg-plum-600 px-5 text-[14.5px] font-medium text-white">{state === "saving" ? "Saving..." : "Save Settings"}</button>
+      {state === "saved" && <p className="mt-5 rounded-card bg-plum-50 p-3 text-[13.5px] text-ink/80">Saved.</p>}
+      <button className="gb-button gb-button--primary mt-5 min-h-11 rounded-control bg-plum-600 px-5 text-[14.5px] font-semibold text-white">{state === "saving" ? "Saving..." : "Save Settings"}</button>
     </form>
   );
 }

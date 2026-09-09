@@ -107,7 +107,7 @@ export function ProfileForm({ userId, initial }: { userId: string; initial: Cand
         <input
           value={skills}
           onChange={(e) => setSkills(e.target.value)}
-          placeholder="Node.js, PostgreSQL, AWS"
+          placeholder="Add skills separated by commas"
           className="mt-1.5 w-full rounded-lg border border-line px-3 py-2.5 text-[14.5px] focus:border-plum-400 focus:outline-none"
         />
       </div>
