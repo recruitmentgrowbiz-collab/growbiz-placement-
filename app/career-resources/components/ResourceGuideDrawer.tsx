@@ -5,8 +5,6 @@ import { X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CareerResource } from "@/features/public-content/types";
 import Link from "next/link";
-import { PrimaryButton } from "@/components/ui";
-import { useRouter } from "next/navigation";
 
 interface ResourceGuideDrawerProps {
   isOpen: boolean;
@@ -17,7 +15,7 @@ interface ResourceGuideDrawerProps {
 }
 
 export function ResourceGuideDrawer({ isOpen, resource, onClose, nextResource, onNext }: ResourceGuideDrawerProps) {
-  const drawerRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -98,16 +96,17 @@ export function ResourceGuideDrawer({ isOpen, resource, onClose, nextResource, o
             onClick={onClose}
             aria-hidden="true"
           />
+          <div className="fixed inset-x-3 top-1/2 z-[101] -translate-y-1/2 sm:inset-x-6 md:left-1/2 md:right-auto md:w-[min(760px,calc(100vw-3rem))] md:-translate-x-1/2">
           <motion.div
-            ref={drawerRef}
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "tween", ease: "easeOut", duration: 0.35 }}
-            className="fixed inset-0 z-[101] flex flex-col bg-white md:left-auto md:right-0 md:w-[75vw] lg:w-[min(680px,55vw)]"
+            initial={{ opacity: 0, scale: 0.96, y: 18 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 12 }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.24 }}
+            className="flex max-h-[calc(100dvh-2rem)] flex-col overflow-hidden rounded-card border border-line bg-white shadow-[0_32px_90px_-42px_rgba(15,23,42,0.65)]"
           >
             {/* Top progress bar */}
             <div className="absolute left-0 top-0 h-[3px] w-full bg-plum-100 z-10">
@@ -206,6 +205,7 @@ export function ResourceGuideDrawer({ isOpen, resource, onClose, nextResource, o
               </div>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

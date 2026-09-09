@@ -1,7 +1,7 @@
 import { pageMetadata } from "@/lib/seo";
 import { publicSeo } from "@/features/public-content/seo-content";
 import Link from "next/link";
-import { BriefcaseBusiness, CheckCircle2, LayoutDashboard, Search, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
+import { BriefcaseBusiness, CheckCircle2, LayoutDashboard, Search, UserRoundCheck } from "lucide-react";
 import { Container, Kicker, PrimaryButton, SecondaryButton, GhostLink } from "@/components/ui";
 import { faqs } from "@/lib/data";
 import { getMembershipPlans } from "@/features/memberships/services/plans";
@@ -180,21 +180,6 @@ export default async function EmployersPage() {
             <div className="py-4">{[["Requirement Calibration", "Complete"], ["Candidate Sourcing", "Complete"], ["Structured Screening", "In Progress"], ["Shortlist", "Upcoming"], ["Interview Coordination", "Upcoming"], ["Offer / Joining", "Upcoming"]].map(([stage, status], index) => <div key={stage} className="flex items-center justify-between border-b border-white/10 py-3 last:border-0"><div className="flex items-center gap-3"><span className={`h-2.5 w-2.5 rounded-full ${index < 2 ? "bg-plum-200" : index === 2 ? "bg-plum-500" : "border border-white/35"}`} /><span className="text-[13.5px] text-white/82">{stage}</span></div><span className="text-[12px] text-white/55">{status}</span></div>)}</div>
             <div className="border-t border-white/12 pt-4"><p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-white/52">Candidate Pipeline</p><div className="mt-3 grid grid-cols-3 gap-2">{["18 sourced", "8 screened", "4 shortlisted"].map((item) => <div key={item} className="rounded-control border border-white/12 bg-white/[0.04] px-3 py-2 text-[12.5px] text-white/78">{item}</div>)}</div></div>
           </div>
-        </Container>
-      </section>
-
-      <section className="border-b border-line py-16 md:py-20">
-        <Container className="grid gap-6 lg:grid-cols-2">
-          <article className="rounded-card border border-line bg-plum-50/60 p-7">
-            <ShieldCheck size={26} className="text-plum-600" />
-            <h2 className="mt-4 font-display text-[20px] font-semibold text-ink">Employer verification</h2>
-            <p className="mt-2 text-[14.5px] leading-relaxed text-mist">Company identity and business details must be verified before full candidate database access. Access also depends on plan entitlement and candidate consent.</p>
-          </article>
-          <article className="rounded-card border border-line bg-plum-50/60 p-7">
-            <UsersRound size={26} className="text-plum-600" />
-            <h2 className="mt-4 font-display text-[20px] font-semibold text-ink">Candidate access with controls</h2>
-            <p className="mt-2 text-[14.5px] leading-relaxed text-mist">Candidate profiles are accessed according to permissions, membership entitlement and visibility controls. Access can be audited, and bulk scraping/export is not part of normal access.</p>
-          </article>
         </Container>
       </section>
 

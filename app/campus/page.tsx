@@ -1,6 +1,7 @@
 import { pageMetadata } from "@/lib/seo";
 import { publicSeo } from "@/features/public-content/seo-content";
 import { Container, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
+import { HeroMedia } from "@/components/HeroMedia";
 
 import { CampusAudienceSection } from "./components/CampusAudienceSection";
 import { CampusWorkflow } from "./components/CampusWorkflow";
@@ -18,14 +19,17 @@ export default function CampusPage() {
   return (
     <>
       <section className="border-b border-line bg-plum-50/60">
-        <Container className="py-16 md:py-20">
-          <Kicker>Campus &amp; early careers</Kicker>
-          <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">{publicSeo["/campus"].h1}</h1>
-          <p className="mt-4 max-w-2xl text-[16.5px] leading-relaxed text-mist">{publicSeo["/campus"].description}</p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <PrimaryButton href="/jobs?experience=fresher">Browse Fresher Jobs</PrimaryButton>
-            <SecondaryButton href="/contact">Partner With Grow Biz</SecondaryButton>
+        <Container className="grid gap-10 py-16 md:py-20 lg:grid-cols-[1fr_0.86fr] lg:items-center">
+          <div>
+            <Kicker>Campus &amp; early careers</Kicker>
+            <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">{publicSeo["/campus"].h1}</h1>
+            <p className="mt-4 max-w-2xl text-[16.5px] leading-relaxed text-mist">{publicSeo["/campus"].description}</p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <PrimaryButton href="/jobs?experience=fresher">Browse Fresher Jobs</PrimaryButton>
+              <SecondaryButton href="/contact">Partner With Grow Biz</SecondaryButton>
+            </div>
           </div>
+          <HeroMedia variant="campus" />
         </Container>
       </section>
 

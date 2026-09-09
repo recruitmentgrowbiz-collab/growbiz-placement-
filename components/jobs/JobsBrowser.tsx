@@ -117,7 +117,7 @@ export function JobsBrowser({
               </select>
             </label>
             <SearchField id="jobs-location" label="Location" icon={<MapPin size={18} aria-hidden="true" />} value={location} onChange={setLocation} placeholder="Enter location" compact />
-            <button type="submit" className="min-h-12 rounded-pill bg-[#2457F5] px-8 py-3 text-[15px] font-semibold text-white shadow-[0_16px_32px_-18px_rgba(36,87,245,0.75)] transition hover:-translate-y-0.5 hover:bg-[#1746D8]">
+            <button type="submit" className="gb-button gb-button--primary min-h-12 rounded-pill bg-plum-600 px-8 py-3 text-[15px] font-semibold text-white shadow-[0_18px_36px_-20px_rgba(184,0,222,0.72)] transition hover:-translate-y-0.5 hover:bg-plum-700">
               Search
             </button>
           </form>

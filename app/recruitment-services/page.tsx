@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { pageMetadata } from "@/lib/seo";
 import { publicSeo } from "@/features/public-content/seo-content";
 import { ServiceNavigator } from "@/components/recruitment/ServiceNavigator";
+import { HeroMedia } from "@/components/HeroMedia";
 import { Container, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
 import { getRecruitmentServices } from "@/features/recruitment/services/recruitment-services";
 import type { CSSProperties } from "react";
@@ -60,7 +61,7 @@ export default async function RecruitmentServicesPage() {
   return (
     <>
       <section className="border-b border-line bg-plum-50/60">
-        <Container className="py-16 md:py-20">
+        <Container className="grid gap-10 py-16 md:py-20 lg:grid-cols-[1fr_0.86fr] lg:items-center">
           <div className="max-w-2xl">
             <Kicker>Managed recruitment</Kicker>
             <h1 className="mt-4 text-balance font-display text-[34px] font-bold leading-[1.12] text-ink md:text-[44px]">{publicSeo["/recruitment-services"].h1}</h1>
@@ -70,6 +71,7 @@ export default async function RecruitmentServicesPage() {
               <SecondaryButton href="/employers">Employer Platform</SecondaryButton>
             </div>
           </div>
+          <HeroMedia variant="recruitment" />
         </Container>
       </section>
 

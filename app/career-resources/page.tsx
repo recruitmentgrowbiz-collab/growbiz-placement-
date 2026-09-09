@@ -4,6 +4,7 @@ import { getCareerResources } from "@/features/public-content/services/resources
 import { pageMetadata, breadcrumbSchema, jsonLd } from "@/lib/seo";
 import { publicSeo } from "@/features/public-content/seo-content";
 import { CareerResourcesClient } from "./components/CareerResourcesClient";
+import { HeroMedia } from "@/components/HeroMedia";
 
 export const metadata = pageMetadata("/career-resources");
 
@@ -14,12 +15,15 @@ export default async function CareerResourcesPage() {
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Career Resources", path: "/career-resources" }])) }} />
     <section className="border-b border-line bg-plum-50/60">
-      <Container className="py-9 md:py-12">
-        <nav aria-label="Breadcrumb" className="mb-5 text-sm text-mist"><Link href="/" className="inline-flex min-h-11 items-center hover:text-plum-700">Home</Link><span aria-hidden="true"> / </span><span aria-current="page">Career Resources</span></nav>
-        <Kicker>Career Resources</Kicker>
-        <h1 className="mt-4 max-w-3xl font-display text-[32px] font-bold leading-tight text-ink md:text-[42px]">{copy.h1}</h1>
-        <p className="mt-4 max-w-2xl text-[15.5px] leading-relaxed text-mist">{copy.description}</p>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row"><PrimaryButton href="#resources">Explore Guides</PrimaryButton><SecondaryButton href="/jobs">Search Jobs</SecondaryButton></div>
+      <Container className="grid gap-10 py-9 md:py-12 lg:grid-cols-[1fr_0.86fr] lg:items-center">
+        <div>
+          <nav aria-label="Breadcrumb" className="mb-5 text-sm text-mist"><Link href="/" className="inline-flex min-h-11 items-center hover:text-plum-700">Home</Link><span aria-hidden="true"> / </span><span aria-current="page">Career Resources</span></nav>
+          <Kicker>Career Resources</Kicker>
+          <h1 className="mt-4 max-w-3xl font-display text-[32px] font-bold leading-tight text-ink md:text-[42px]">{copy.h1}</h1>
+          <p className="mt-4 max-w-2xl text-[15.5px] leading-relaxed text-mist">{copy.description}</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row"><PrimaryButton href="#resources">Explore Guides</PrimaryButton><SecondaryButton href="/jobs">Search Jobs</SecondaryButton></div>
+        </div>
+        <HeroMedia variant="career" />
       </Container>
     </section>
 

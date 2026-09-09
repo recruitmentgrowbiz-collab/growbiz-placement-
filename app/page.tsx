@@ -1,9 +1,9 @@
 import { jsonLd, organizationSchema, websiteSchema, pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, CheckCircle2, Search, UsersRound } from "lucide-react";
 import { Container, GhostLink, Kicker, PrimaryButton, SecondaryButton } from "@/components/ui";
 import { SearchBar } from "@/components/SearchBar";
-import { HeroArt } from "@/components/HeroArt";
+import { HeroMedia } from "@/components/HeroMedia";
 import { JobCard } from "@/components/JobCard";
 import { services } from "@/lib/data";
 import { getFeaturedJobs } from "@/features/jobs/services/jobs";
@@ -40,7 +40,7 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd([organizationSchema, websiteSchema]) }} />
       <section className="border-b border-line bg-plum-50/50">
-        <Container className="grid gap-10 py-12 md:grid-cols-[1.12fr_0.88fr] md:items-center md:py-16 lg:py-20">
+        <Container className="grid gap-10 py-12 md:py-16 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:py-20">
           <div className="animate-rise">
             <Kicker>Recruitment &amp; job marketplace</Kicker>
             <h1 className="mt-4 max-w-[16ch] text-balance font-display text-[clamp(2.45rem,8vw,4.25rem)] font-bold leading-[1.06] text-ink">
@@ -72,7 +72,7 @@ export default async function HomePage() {
             </ul>
           </div>
 
-          <HeroArt />
+          <HeroMedia variant="home" />
         </Container>
       </section>
 
@@ -105,9 +105,9 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <section className="border-b border-line bg-plum-900 py-14 text-white md:py-16 lg:py-20">
-        <Container className="grid gap-9 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
+      <section className="gb-candidate-panel relative overflow-hidden bg-plum-900 py-14 text-white md:py-16 lg:py-20">
+        <Container className="relative z-10 grid gap-9 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
+          <div className="max-w-xl">
             <Kicker><span className="text-plum-200">For candidates</span></Kicker>
             <h2 className="mt-4 text-balance font-display text-[30px] font-bold leading-tight md:text-[36px]">
               Your Next Opportunity Starts Here
@@ -118,10 +118,10 @@ export default async function HomePage() {
               resume, interview skills and profile visibility.
             </p>
             <div className="mt-6 flex flex-col gap-3 xs:flex-row">
-              <Link href="/jobs" className="inline-flex min-h-11 items-center justify-center rounded-pill bg-white px-5 py-3 text-[15px] font-semibold text-plum-700 shadow-[0_14px_30px_-18px_rgba(255,255,255,0.65)] transition hover:-translate-y-0.5 hover:bg-plum-50">
+              <Link href="/jobs" className="gb-button gb-button--candidate-primary inline-flex min-h-11 items-center justify-center rounded-pill bg-white px-5 py-3 text-[15px] font-semibold text-plum-700">
                 Browse Jobs
               </Link>
-              <Link href="/candidate/signup" className="inline-flex min-h-11 items-center justify-center rounded-pill border border-white/30 bg-white/[0.04] px-5 py-3 text-[15px] font-medium text-white transition hover:-translate-y-0.5 hover:border-white/55 hover:bg-white/10">
+              <Link href="/candidate/signup" className="gb-button gb-button--candidate-secondary inline-flex min-h-11 items-center justify-center rounded-pill border border-white/25 bg-white/[0.06] px-5 py-3 text-[15px] font-medium text-white">
                 Create Profile
               </Link>
             </div>
@@ -129,10 +129,12 @@ export default async function HomePage() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             {candidateBenefits.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="rounded-card border border-white/14 bg-white/[0.04] p-4">
-                <Icon size={19} className="text-plum-200" aria-hidden="true" />
-                <h3 className="mt-3 font-display text-[15.5px] font-semibold">{title}</h3>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/65">{text}</p>
+              <article key={title} className="gb-candidate-card group rounded-card border border-white/12 bg-white/[0.055] p-4">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/12 bg-white/[0.07] text-plum-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
+                  <Icon size={18} aria-hidden="true" />
+                </span>
+                <h3 className="mt-4 font-display text-[15.5px] font-semibold">{title}</h3>
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/68">{text}</p>
               </article>
             ))}
           </div>
@@ -148,9 +150,13 @@ export default async function HomePage() {
                 Recruitment Support for Every Stage of Growth
               </h2>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <SecondaryButton href="/recruitment-services">Explore Recruitment Services</SecondaryButton>
-              <PrimaryButton href="/recruitment-services">Share Hiring Requirement</PrimaryButton>
+            <div className="gb-service-cta-group flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row sm:justify-end">
+              <SecondaryButton href="/recruitment-services" className="gb-service-cta gb-service-cta--secondary w-full justify-center sm:w-[190px]">
+                Explore Recruitment Services <ArrowRight size={15} aria-hidden="true" />
+              </SecondaryButton>
+              <PrimaryButton href="/recruitment-services#hiring-requirement" className="gb-service-cta gb-service-cta--primary w-full justify-center sm:w-[190px]">
+                Share Hiring Requirement <ArrowRight size={15} aria-hidden="true" />
+              </PrimaryButton>
             </div>
           </div>
 
@@ -257,9 +263,11 @@ export default async function HomePage() {
 
       <section className="bg-white py-14 md:py-16 lg:py-20">
         <Container>
-          <div className="grid gap-4 rounded-card bg-plum-600 p-5 text-white shadow-lift sm:p-8 lg:grid-cols-2 lg:p-10">
-            <FinalCta title="Find Opportunities" text="Search roles and apply free through Grow Biz Jobs." href="/jobs" cta="Search Jobs" />
-            <FinalCta title="Build Your Team" text="Post jobs or get recruitment support from Grow Biz." href="/employers" cta="Hire Talent" secondary />
+          <div className="gb-final-cta relative overflow-hidden rounded-card bg-plum-600 p-4 text-white sm:p-5">
+            <div className="relative z-10 grid gap-3 lg:grid-cols-2">
+              <FinalCta icon={Search} title="Find Opportunities" text="Search roles and apply free through Grow Biz Jobs." href="/jobs" cta="Search Jobs" />
+              <FinalCta icon={UsersRound} title="Build Your Team" text="Post jobs or get recruitment support from Grow Biz." href="/employers" cta="Hire Talent" secondary />
+            </div>
           </div>
         </Container>
       </section>
@@ -290,18 +298,22 @@ function ProcessCard({ kicker, title, steps, href, cta, note }: { kicker: string
   );
 }
 
-function FinalCta({ title, text, href, cta, secondary = false }: { title: string; text: string; href: string; cta: string; secondary?: boolean }) {
+function FinalCta({ icon: Icon, title, text, href, cta, secondary = false }: { icon: typeof BriefcaseBusiness; title: string; text: string; href: string; cta: string; secondary?: boolean }) {
   return (
-    <article className="rounded-card border border-white/18 bg-white/[0.06] p-5">
-      <h2 className="font-display text-[24px] font-bold">{title}</h2>
-      <p className="mt-2 text-[14.5px] leading-relaxed text-white/72">{text}</p>
+    <article className="gb-final-cta-card group rounded-card border p-4 text-ink sm:p-5">
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-plum-100 bg-plum-50 text-plum-600">
+        <Icon size={19} aria-hidden="true" />
+      </span>
+      <h2 className="mt-4 font-display text-[22px] font-bold">{title}</h2>
+      <p className="mt-2 text-[14.5px] leading-relaxed text-mist">{text}</p>
       <Link
         href={href}
-        className={`mt-5 inline-flex min-h-11 items-center justify-center rounded-pill px-5 py-3 text-[15px] font-medium transition-colors ${
-          secondary ? "border border-white/35 text-white hover:bg-white/10" : "bg-white text-plum-700 hover:bg-white/90"
+        className={`gb-button mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-pill px-5 py-3 text-[14.5px] font-semibold ${
+          secondary ? "border border-plum-200 bg-white text-plum-700" : "bg-plum-600 text-white"
         }`}
       >
         {cta}
+        <ArrowRight size={15} className="gb-interaction-arrow" aria-hidden="true" />
       </Link>
     </article>
   );

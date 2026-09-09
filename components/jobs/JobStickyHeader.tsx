@@ -38,7 +38,8 @@ export function JobStickyHeader({
   }, []);
 
   return (
-    <div className={`fixed inset-x-0 top-0 z-[60] border-b border-line bg-white/96 shadow-[0_18px_38px_-30px_rgba(15,23,42,0.55)] backdrop-blur transition duration-200 ${visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}>
+    <div className={`fixed inset-x-0 top-0 z-[60] border-b border-line bg-white/82 shadow-[0_18px_38px_-30px_rgba(15,23,42,0.55)] backdrop-blur-xl transition duration-200 ${visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}>
+      <div className="absolute inset-0 -z-10 bg-white/72" aria-hidden="true" />
       <div className="mx-auto flex max-w-content items-center gap-4 px-5 py-3 md:px-8">
         <JobCompanyAvatar company={company} logoUrl={logoUrl} size="sm" />
         <div className="min-w-0 flex-1">
@@ -53,8 +54,8 @@ export function JobStickyHeader({
         <Link
           href={closed ? "/jobs" : `/candidate/signup?returnTo=${encodeURIComponent(jobHref)}`}
           aria-disabled={closed}
-          className={`inline-flex min-h-11 shrink-0 items-center justify-center rounded-pill px-6 text-[14.5px] font-semibold shadow-[0_16px_32px_-18px_rgba(36,87,245,0.75)] transition hover:-translate-y-0.5 md:px-8 ${
-            closed ? "pointer-events-none bg-line text-ink/55" : "bg-[#2457F5] text-white hover:bg-[#1746D8]"
+          className={`gb-button inline-flex min-h-11 shrink-0 items-center justify-center rounded-pill px-6 text-[14.5px] font-semibold transition hover:-translate-y-0.5 md:px-8 ${
+            closed ? "pointer-events-none bg-line text-ink/55" : "gb-button--primary bg-plum-600 text-white shadow-[0_16px_32px_-18px_rgba(184,0,222,0.72)] hover:bg-plum-700"
           }`}
         >
           {closed ? "Browse Jobs" : "Apply"}
