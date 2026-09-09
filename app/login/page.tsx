@@ -24,32 +24,32 @@ export default function LoginPage() {
       </div>
 
       <Container className="relative grid gap-6 lg:grid-cols-[1.04fr_0.96fr] lg:items-stretch">
-        <aside className="overflow-hidden rounded-card bg-plum-900 p-7 text-white shadow-[0_30px_76px_-44px_rgba(15,23,42,0.72)] md:p-8">
+        <aside className="overflow-hidden rounded-card bg-plum-900 p-5 text-white shadow-[0_30px_76px_-44px_rgba(15,23,42,0.72)] xs:p-6 md:p-8">
           <Kicker><span className="text-plum-200">Grow Biz access</span></Kicker>
           <h1 className="mt-5 max-w-lg font-display text-[36px] font-bold leading-tight md:text-[48px]">Log in</h1>
           <p className="mt-4 max-w-md text-[15.5px] leading-relaxed text-white/72">
             Candidates and employers both log in here. Grow Biz routes you to the right dashboard after sign in.
           </p>
 
-          <div className="mt-8 rounded-card border border-white/10 bg-white/[0.045] p-5">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-              <div className="rounded-card bg-white/[0.06] p-4">
-                <BriefcaseBusiness size={22} className="text-plum-200" aria-hidden="true" />
-                <p className="mt-3 font-display text-[16px] font-semibold">Employers</p>
-                <p className="mt-1 text-[12.5px] text-white/58">Jobs & applicants</p>
+          <div className="mt-8 rounded-card border border-white/10 bg-white/[0.045] p-4 xs:p-5">
+            <div className="grid grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-2 xs:grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] xs:gap-3">
+              <div className="min-w-0 rounded-card bg-white/[0.06] p-3 xs:p-4">
+                <BriefcaseBusiness size={20} className="text-plum-200" aria-hidden="true" />
+                <p className="mt-3 font-display text-[14.5px] font-semibold xs:text-[16px]">Employers</p>
+                <p className="mt-1 text-[12px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; applicants</p>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-plum-600 shadow-[0_0_28px_rgba(201,13,255,0.34)]">
-                <Route size={19} aria-hidden="true" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-plum-600 shadow-[0_0_28px_rgba(201,13,255,0.34)] xs:h-11 xs:w-11">
+                <Route size={17} aria-hidden="true" />
               </div>
-              <div className="rounded-card bg-white/[0.06] p-4">
-                <UserRound size={22} className="text-plum-200" aria-hidden="true" />
-                <p className="mt-3 font-display text-[16px] font-semibold">Candidates</p>
-                <p className="mt-1 text-[12.5px] text-white/58">Jobs & profile</p>
+              <div className="min-w-0 rounded-card bg-white/[0.06] p-3 xs:p-4">
+                <UserRound size={20} className="text-plum-200" aria-hidden="true" />
+                <p className="mt-3 font-display text-[14.5px] font-semibold xs:text-[16px]">Candidates</p>
+                <p className="mt-1 text-[12px] leading-snug text-white/58 xs:text-[12.5px]">Jobs &amp; profile</p>
               </div>
             </div>
             <div className="mt-5 grid gap-2.5">
               {["Secure account access", "Role-based dashboard routing", "Password or verified phone login"].map((item) => (
-                <div key={item} className="flex items-center gap-2 rounded-card bg-white/[0.055] px-4 py-3 text-[13.5px] text-white/75">
+                <div key={item} className="flex items-center gap-2 rounded-card bg-white/[0.055] px-3 py-3 text-[12.5px] leading-snug text-white/75 xs:px-4 xs:text-[13.5px]">
                   <Check size={15} className="text-plum-200" aria-hidden="true" />
                   {item}
                 </div>
